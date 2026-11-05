@@ -14,11 +14,11 @@
 | Project | Customer Churn Prediction Using Machine Learning |
 | Dataset | IBM Telco Customer Churn (Kaggle) |
 | Goal | Predict which customers will churn, explain why, serve predictions via a web app |
-| Current phase | Phase 1 — Data collection & understanding (in progress — waiting for dataset) |
-| Overall progress | 4 / 35 tasks (11%) |
+| Current phase | Phase 2 — Exploratory data analysis (next) |
+| Overall progress | 6 / 35 tasks (17%) |
 | Last updated | 2026-11-05 |
-| Next immediate action | Put `WA_Fn-UseC_-Telco-Customer-Churn.csv` in `data/raw/`, run `python -m src.data_check`, copy numbers into Section 5 |
-| Blockers | Real dataset not yet added (download from Kaggle: "Telco Customer Churn" by blastchar). Push to GitHub is a manual step (create empty repo, then `git remote add origin <url>` + `git push -u origin main`) |
+| Next immediate action | Build `notebooks/01_eda.ipynb`: churn rate by Contract, tenure, InternetService, PaymentMethod |
+| Blockers | Push to GitHub is a manual step (create empty repo, then `git remote add origin <url>` + `git push -u origin main`) |
 
 **How % is calculated:** ticked tasks in Section 2 ÷ 35 total tasks × 100.
 
@@ -27,7 +27,7 @@
 | Phase | Name | Tasks | Done | Status |
 | --- | --- | --- | --- | --- |
 | 0 | Setup | 3 | 3 | Done (local; GitHub push by you) |
-| 1 | Data collection & understanding | 3 | 1 | In progress (tooling ready, needs CSV) |
+| 1 | Data collection & understanding | 3 | 3 | Done |
 | 2 | Exploratory data analysis | 4 | 0 | Not started |
 | 3 | Cleaning & preprocessing | 5 | 0 | Not started |
 | 4 | Feature engineering & imbalance | 2 | 0 | Not started |
@@ -36,7 +36,7 @@
 | 7 | Deployment | 4 | 0 | Not started |
 | 8 | Documentation & presentation | 3 | 0 | Not started |
 | — | Final wrap-up | 2 | 0 | Not started |
-| **Total** | | **35** | **4** | |
+| **Total** | | **35** | **6** | |
 
 Status values: `Not started` · `In progress` · `Done`
 
@@ -55,12 +55,12 @@ Tick `[x]` only when the phase's **Done when** check is met.
 > Status: skeleton, `requirements.txt`, `.gitignore`, README and first git commit done. You still need to: create the venv on your machine (`python -m venv venv` → `pip install -r requirements.txt`) and push to GitHub.
 
 ### Phase 1 — Data collection & understanding
-- [ ] 1.1 Download Telco Customer Churn CSV into `data/raw/`
+- [x] 1.1 Download Telco Customer Churn CSV into `data/raw/`
 - [x] 1.2 Write data dictionary (column, type, meaning)
-- [ ] 1.3 Check shape, nulls, duplicates, churn class balance
+- [x] 1.3 Check shape, nulls, duplicates, churn class balance
 
 **Done when:** rows, columns, missing values and churn % are recorded in Section 5.
-> Status: `src/load_data.py`, `src/data_check.py` and `data/data_dictionary.md` are built and tested (pytest on a SYNTHETIC sample). To finish 1.1 + 1.3: add the real CSV, run `python -m src.data_check`, which writes `reports/data_quality_report.md`; then tick 1.1 and 1.3 and fill Section 5.
+> Status: Done. Real CSV in `data/raw/`; `python -m src.data_check` → `reports/data_quality_report.md`; results in Section 5.
 
 ### Phase 2 — Exploratory data analysis (`notebooks/01_eda.ipynb`)
 - [ ] 2.1 Churn rate by Contract, tenure, InternetService, PaymentMethod
@@ -165,9 +165,9 @@ Record every decision that someone resuming the project must know.
 
 | Date | Decision / Result | Reason / Value |
 | --- | --- | --- |
-| | Dataset shape | _rows × columns — fill from data_quality_report.md (expected ≈ 7,043 × 21)_ |
-| | Churn % | _fill from report (expected ≈ 26.5%)_ |
-| | Missing-value handling | |
+| 2026-11-05 | Dataset shape | 7,043 rows × 21 columns; no NaN, no duplicate rows or IDs |
+| 2026-11-05 | Churn % | 1,869 Yes / 5,174 No → 26.5% (imbalanced; use stratified split, recall/F1/ROC-AUC) |
+| 2026-11-05 | Missing-value handling | 11 blank `TotalCharges`, all tenure = 0 and none churned (new, unbilled customers) → plan: set to 0 in Phase 3 |
 | | Imbalance method | _class_weight or SMOTE, and why_ |
 | | Best model | |
 | | Best model scores | _Recall / F1 / ROC-AUC_ |
@@ -180,11 +180,12 @@ Record every decision that someone resuming the project must know.
 
 | Path | What it does | Status |
 | --- | --- | --- |
-| `data/raw/` | Original Kaggle CSV (never edited) | Folder created, CSV pending |
+| `data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv` | Original Kaggle CSV (never edited) | Done |
+| `reports/data_quality_report.md` | Output of `python -m src.data_check` on the real data | Done |
 | `data/data_dictionary.md` | All 21 columns: type, values, meaning, modelling note | Done |
 | `src/load_data.py` | `load_raw()` + column groups (numeric / categorical / target) | Done |
-| `src/data_check.py` | Data-quality check → `reports/data_quality_report.md` | Done (run on real CSV pending) |
-| `tests/test_data_check.py` | Tests for loader + data check | Done (3 pass, 1 skips until real CSV) |
+| `src/data_check.py` | Data-quality check → `reports/data_quality_report.md` | Done |
+| `tests/test_data_check.py` | Tests for loader + data check | Done (4 pass) |
 | `tests/make_sample_fixture.py` + `tests/fixtures/sample_telco_SYNTHETIC.csv` | SYNTHETIC 200-row sample for tests only — never for results | Done |
 | `pytest.ini` | Lets tests import `src` | Done |
 | `data/processed/` | Cleaned, encoded data | Folder created |
@@ -213,6 +214,7 @@ Newest first. One line per session.
 
 | Date | Phase | What was done | Next step / Blockers |
 | --- | --- | --- | --- |
+| 2026-11-05 | 1 | Real CSV added; data check run (7,043 × 21, 26.5% churn, 11 blank TotalCharges); all 4 tests pass — Phase 1 done | Phase 2: EDA notebook |
 | 2026-11-05 | 1 | Data dictionary, loader, data-quality check, tests + synthetic fixture (3 tests pass) | Add real CSV → run `python -m src.data_check` → tick 1.1, 1.3 |
 | 2026-11-05 | 0 | Folder skeleton, requirements.txt, .gitignore, README, check_progress.py, first git commit | Phase 1: add Telco CSV to data/raw/; push repo to GitHub |
 | 2026-11-05 | — | Project planned; CONTINUITY.md created | Create repo + folders |
