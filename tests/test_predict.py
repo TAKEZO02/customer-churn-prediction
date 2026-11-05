@@ -23,13 +23,13 @@ def test_predict_one_example_is_high_risk():
 def test_loyal_customer_is_low_risk():
     loyal = {**EXAMPLE_CUSTOMER, "tenure": 70, "Contract": "Two year", "InternetService": "DSL",
              "OnlineSecurity": "Yes", "TechSupport": "Yes", "PaymentMethod": "Credit card (automatic)",
-             "MonthlyCharges": 60.0, "TotalCharges": 4200.0}
+             "MonthlyCharges": 5700, "TotalCharges": 3_98_000}   # ₹ (≈ $60 / $4,200)
     r = predict_one(loyal)
     assert r["risk_level"] == "Low" and not r["at_risk"] and r["actions"] == []
 
 
 def test_reasons_add_up_to_prediction():
-    r = predict_one(EXAMPLE_CUSTOMER, top_n=19, n_permutations=200)
+    r = predict_one(EXAMPLE_CUSTOMER, top_n=20, n_permutations=200)
     total = r["base_value"] + sum(x["impact"] for x in r["reasons"])
     assert total == pytest.approx(r["probability"], abs=0.06)
 
@@ -60,3 +60,25 @@ def test_batch_scores_raw_csv_format():
 def test_streamlit_app_is_valid_python():
     src = (Path(__file__).parents[1] / "app" / "streamlit_app.py").read_text()
     ast.parse(src)
+
+
+def test_rupee_and_dollar_inputs_agree():
+    from src.currency import USD_TO_INR
+    usd = {**EXAMPLE_CUSTOMER, "MonthlyCharges": 85.70, "TotalCharges": 257.10}
+    inr = {**usd, "MonthlyCharges": 85.70 * USD_TO_INR, "TotalCharges": 257.10 * USD_TO_INR}
+    a = predict_one(usd, currency="USD", explain=False)["probability"]
+    b = predict_one(inr, currency="INR", explain=False)["probability"]
+    assert a == pytest.approx(b, abs=1e-4)
+
+
+def test_only_selected_features_required():
+    from src.features import SELECTED_FEATURES
+    from src.predict import feature_columns
+    assert feature_columns() == SELECTED_FEATURES
+    assert set(EXAMPLE_CUSTOMER) == set(SELECTED_FEATURES)
+
+
+def test_inr_formatting():
+    from src.currency import fmt_inr
+    assert fmt_inr(1234567.8) == "₹12,34,568"
+    assert fmt_inr(8130) == "₹8,130" and fmt_inr(500) == "₹500"

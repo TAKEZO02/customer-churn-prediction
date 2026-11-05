@@ -23,8 +23,8 @@ Source: Kaggle, "Telco Customer Churn" (blastchar), originally an IBM sample dat
 | 16 | Contract | Categorical | Month-to-month, One year, Two year | Contract term | One-hot; strong churn signal |
 | 17 | PaperlessBilling | Binary | Yes, No | Uses paperless billing | Encode 0/1 |
 | 18 | PaymentMethod | Categorical | Electronic check, Mailed check, Bank transfer (automatic), Credit card (automatic) | How the customer pays | One-hot |
-| 19 | MonthlyCharges | Numeric (float) | ≈ 18–119 | Current monthly bill | Scale |
-| 20 | TotalCharges | Numeric **stored as text** | ≈ 18–8,700; a few blanks | Total billed to date | Convert to numeric; blanks = tenure-0 customers |
+| 19 | MonthlyCharges | Numeric (float) | ≈ $18–119 (≈ ₹1,731–11,263) | Current monthly bill (dataset is in US $) | Scale; app takes ₹ |
+| 20 | TotalCharges | Numeric **stored as text** | ≈ $18–8,700; a few blanks | Total billed to date | Convert to numeric; blanks = tenure-0 customers |
 | 21 | Churn | Target | Yes, No | Left within the last month | Encode Yes=1, No=0 |
 
 **Expected on the real file** (confirm with `python -m src.data_check`): about 7,043 rows × 21 columns, about 26.5% churn, a handful (~11) of blank `TotalCharges`, no duplicate IDs. Record the actual numbers in CONTINUITY.md Section 5.
@@ -33,3 +33,8 @@ Source: Kaggle, "Telco Customer Churn" (blastchar), originally an IBM sample dat
 - Numeric: tenure, MonthlyCharges, TotalCharges
 - Already 0/1: SeniorCitizen
 - Categorical (15): gender, Partner, Dependents, PhoneService, MultipleLines, InternetService, OnlineSecurity, OnlineBackup, DeviceProtection, TechSupport, StreamingTV, StreamingMovies, Contract, PaperlessBilling, PaymentMethod
+
+**Used by the final model (9 of 19, see `src/features.py`):** Contract, InternetService, tenure, TotalCharges,
+OnlineSecurity, TechSupport, PaymentMethod, MonthlyCharges, MultipleLines. The other 10 were dropped after
+`python -m src.select_features` showed they add no accuracy. Charges are in US dollars in the data; the app and
+`src/predict.py` accept rupees and convert them (`src/currency.py`, 1 $ = ₹94.85).

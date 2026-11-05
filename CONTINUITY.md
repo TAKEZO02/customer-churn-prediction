@@ -18,6 +18,7 @@
 | Overall progress | 29 / 35 tasks (83%) |
 | Last updated | 2026-11-05 |
 | Next immediate action | YOU: `streamlit run app/streamlit_app.py` locally, push to GitHub, deploy on Streamlit Community Cloud (steps in `DEPLOY.md`), paste link in Section 6, tick 7.4. Then Phase 8 (docs) |
+| Model version | **v2 (2026-11-05):** 9 input features (was 19) + charges entered in ₹ (converted to $ for the model). Same test ROC-AUC 0.845 |
 | Blockers | 7.4 (cloud deploy) needs your GitHub + Streamlit accounts. XGBoost/LightGBM not run yet (not installed in build env) — run `pip install xgboost lightgbm` then `python -m src.train` locally; it adds them automatically. Push to GitHub is a manual step (create empty repo, then `git remote add origin <url>` + `git push -u origin main`) |
 
 **How % is calculated:** ticked tasks in Section 2 ÷ 35 total tasks × 100.
@@ -152,7 +153,9 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | joblib | 1.x | 5 | Save/load `models/churn_model.pkl`, `preprocessor.pkl` |
 | Shapley values (built-in sampler, `src/explain.py`) | — | 6 | SHAP global importance, by-value effects, customer waterfalls |
 | scikit-learn `permutation_importance` | 1.x | 6 | Independent check of the SHAP ranking |
-| Streamlit (code written; not run in build env) | ≥1.35 | 7 | Web app `app/streamlit_app.py` |
+| Streamlit (code written; not run in build env) | ≥1.35 | 7 | Web app `app/streamlit_app.py` (v2: 9 inputs, ₹) |
+| scikit-learn permutation importance + CV | 1.x | v2 | Feature reduction experiment (`src/select_features.py`) |
+| Exchange rate (Wise mid-market) | 94.85 | v2 | ₹ ↔ $ conversion in `src/currency.py` |
 | pytest | 9.x | 7 | `tests/test_predict.py` (7 tests) |
 | scikit-learn | 1.x | 3–5 | `ColumnTransformer`, `OneHotEncoder`, `StandardScaler`, `train_test_split`; Phase 4: `StratifiedKFold`, LogisticRegression, RandomForest, `NearestNeighbors` (built-in SMOTE); Phase 5: `Pipeline`, `cross_validate`, `RandomizedSearchCV`, DecisionTree, HistGradientBoosting, metrics |
 
@@ -196,6 +199,10 @@ Record every decision that someone resuming the project must know.
 | 2026-11-05 | Decision threshold | **0.49** = highest threshold with out-of-fold recall ≥ 80% (train set). Business rule: catch 80% of churners; raise it for fewer false alarms |
 | 2026-11-05 | Top 5 churn drivers (mean \|SHAP\|, RF) | 1 Contract 0.11 (M2M +0.09, 2-yr −0.17) · 2 InternetService 0.06 (fiber +0.06) · 3 tenure 0.05 (0–12 mo +0.08) · 4 OnlineSecurity 0.04 (none +0.04) · 5 TechSupport 0.03 (none +0.03). Also electronic check +0.03. Gender, PhoneService ≈ 0. Permutation importance agrees (Contract, tenure, InternetService top 3) |
 | 2026-11-05 | Retention actions | 1 discount to move M2M → 1/2-yr contract · 2 fiber price/quality offers · 3 onboarding check-ins months 1–6 · 4–5 bundle OnlineSecurity/TechSupport free 3–6 mo · auto-pay credit for e-check payers. Validate with A/B tests (SHAP = correlation, not causation) |
+| 2026-11-05 | **Feature reduction (v2)** | Ranked 19 inputs by out-of-fold permutation importance (train only); kept smallest set within 0.002 CV ROC-AUC of full: **9 features** (Contract, InternetService, tenure, TotalCharges, OnlineSecurity, TechSupport, PaymentMethod, MonthlyCharges, MultipleLines). CV AUC 0.8486 → 0.8475; 8 features 0.8458 (too low). Dropped: PaperlessBilling, OnlineBackup, StreamingMovies, StreamingTV, gender, SeniorCitizen, PhoneService, Dependents, DeviceProtection, Partner |
+| 2026-11-05 | v2 model (retrained on 9 features) | Tuned RF (same params), threshold 0.493. TEST: ROC-AUC 0.845 (unchanged), recall 0.802, precision 0.525, F1 0.635; TN 764, FP 271, FN 74, TP 300 (19-feature model: 299 caught, 280 false alarms) |
+| 2026-11-05 | v2 SHAP drivers | Contract 0.111, InternetService 0.078 (fiber +0.08), tenure 0.053 (0–12 mo +0.08), OnlineSecurity 0.047, TechSupport 0.036, TotalCharges 0.030, PaymentMethod 0.028 (e-check +0.04), MonthlyCharges 0.027 |
+| 2026-11-05 | **Currency (v2)** | Users enter ₹; converted to $ at 1 $ = ₹94.85 (Wise mid-market, 2026-11-05) before the model. Model unchanged (trained in $). Batch upload asks whether the file is ₹ or $ (original Kaggle file = $). App warns when monthly bill is outside the trained range ₹1,731–11,263. Update the rate in `src/currency.py` — no retraining needed. EDA notebook charts/insights now shown in ₹ |
 | 2026-11-05 | App risk levels | Low < 0.49 (threshold, not flagged) ≤ Medium < 0.70 ≤ High. Reasons = Shapley values vs 100 fixed training customers (`models/background.csv`), 60 permutations (~1 s) |
 | 2026-11-05 | Deployment packaging | `requirements.txt` = runtime only, PINNED to training versions (scikit-learn 1.9.1, pandas 3.0.5, numpy 2.5.3) for pickle compatibility; extras in `requirements-dev.txt`. Model + background committed to git (un-ignored) so Streamlit Cloud has them. FastAPI skipped (optional) |
 | 2026-11-05 | Probability scale | Base value 0.44 (not 0.265) because of class_weight='balanced' — ranking unaffected; threshold 0.49 is on this scale. Use `CalibratedClassifierCV` if calibrated probabilities are needed |
@@ -242,7 +249,10 @@ Record every decision that someone resuming the project must know.
 | `models/churn_model.pkl` | Dict: fitted `pipeline`, `threshold`, `model_name`, `feature_columns`, `best_params`, `test_metrics` (git-ignored; recreate with `python -m src.train`) | Done |
 | `models/preprocessor.pkl` | Fitted ColumnTransformer alone | Done |
 | `app/streamlit_app.py` | Streamlit app: single customer, batch CSV, about tab | Done (run locally to verify) |
-| `tests/test_predict.py` | 7 tests: high/low risk cases, reasons add up, validation, risk levels, batch, app parses | Done |
+| `tests/test_predict.py` | 10 tests: high/low risk cases, reasons add up, validation, risk levels, batch, app parses, ₹ = $ equivalence, 9-feature input, ₹ formatting | Done |
+| `src/features.py` | `SELECTED_FEATURES` (9 inputs the model uses) + `DROPPED_FEATURES`; set to `None` for all 19 | Done |
+| `src/select_features.py` | Feature-reduction experiment → `reports/feature_selection.csv`, `feature_ranking.csv`, `figures/15_feature_selection.png` | Done |
+| `src/currency.py` | `USD_TO_INR` (94.85), `to_usd`, `to_inr`, `fmt_inr` (₹12,34,568 style) | Done |
 | `reports/` | Figures, final report | Folder created |
 | `README.md` | Project overview + setup | Draft (finalised in Phase 8) |
 | `requirements.txt` | All Python dependencies | Done |
@@ -258,6 +268,7 @@ Newest first. One line per session.
 
 | Date | Phase | What was done | Next step / Blockers |
 | --- | --- | --- | --- |
+| 2026-11-05 | 7 (v2) | Feature reduction 19 → 9 (no accuracy loss), retrained, ₹ input in app + predict + EDA, notebooks 01/03/04 refreshed, 28 tests pass | You: run app locally + deploy (7.4). Then Phase 8 |
 | 2026-11-05 | 7 | predict.py, Streamlit app (smoke-tested), 7 tests (25 total pass), pinned requirements, DEPLOY.md, model committed | You: run app locally + deploy (7.4). Then Phase 8 |
 | 2026-11-05 | 6 | SHAP explanations (built-in backend), permutation check, 3 customer waterfalls, top-5 drivers + actions, notebook 04, 18 tests pass | Phase 7: predict.py + Streamlit app |
 | 2026-11-05 | 5 | 4 models compared, LR + RF tuned, threshold 0.49 for 80% recall, test ROC-AUC 0.845, model saved, notebook 03, 16 tests pass | Phase 6: SHAP (install shap); run XGBoost/LightGBM locally |

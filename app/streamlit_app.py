@@ -1,10 +1,11 @@
-"""Customer Churn Predictor — Streamlit app (Phase 7).
+"""Customer Churn Predictor — Streamlit app (Phase 7, v2: ₹ input, 9 features).
 
 Run locally from the project root:
     streamlit run app/streamlit_app.py
 
-Tab 1: enter one customer -> churn probability, risk level, top reasons (SHAP), suggested actions.
-Tab 2: upload a CSV in the Telco format -> scored, sorted list to download.
+Tab 1: enter one customer (9 fields, charges in ₹) -> churn probability, risk level,
+       top reasons (Shapley values), suggested retention actions.
+Tab 2: upload a CSV -> scored, sorted list to download (choose ₹ or $ for the charges).
 """
 import sys
 from pathlib import Path
@@ -15,8 +16,11 @@ import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from src.predict import (ALLOWED, EXAMPLE_CUSTOMER, HIGH_RISK, load_background,  # noqa: E402
-                         load_model, predict_batch, predict_one)
+from src.currency import (RATE_SOURCE, TRAINED_MONTHLY_INR, USD_TO_INR,  # noqa: E402
+                          fmt_inr, to_usd)
+from src.predict import (ALLOWED, EXAMPLE_CUSTOMER, HIGH_RISK,  # noqa: E402
+                         feature_columns, load_background, load_model,
+                         predict_batch, predict_one)
 
 st.set_page_config(page_title="Customer Churn Predictor", page_icon="📉", layout="wide")
 
@@ -33,13 +37,14 @@ def _warm_up():
 
 bundle = _warm_up()
 metrics = bundle["test_metrics"]
+FEATURES = feature_columns()
 
 # ---------------------------------------------------------------- header
 st.title("Customer Churn Predictor")
 st.caption(
-    f"Model: {bundle['model_name']} · test ROC-AUC {metrics['roc_auc']:.3f} · catches "
-    f"{metrics['tuned_threshold']['recall']:.0%} of churners at threshold {bundle['threshold']:.2f} · "
-    "IBM Telco Customer Churn dataset"
+    f"Model: {bundle['model_name']} on {len(FEATURES)} inputs · test ROC-AUC {metrics['roc_auc']:.3f} · "
+    f"catches {metrics['tuned_threshold']['recall']:.0%} of churners at threshold {bundle['threshold']:.2f} · "
+    f"charges in ₹ (1 $ = ₹{USD_TO_INR})"
 )
 
 tab_one, tab_batch, tab_about = st.tabs(["Single customer", "Batch (CSV upload)", "About the model"])
@@ -55,43 +60,38 @@ with tab_one:
             contract = st.selectbox("Contract", ALLOWED["Contract"], index=ALLOWED["Contract"].index(ex["Contract"]))
             payment = st.selectbox("Payment method", ALLOWED["PaymentMethod"],
                                    index=ALLOWED["PaymentMethod"].index(ex["PaymentMethod"]))
-            paperless = st.radio("Paperless billing", ["Yes", "No"], horizontal=True)
-            monthly = st.number_input("Monthly charges ($)", 0.0, 200.0, float(ex["MonthlyCharges"]), step=0.5)
-            total = st.number_input("Total charges ($)", 0.0, 10000.0, float(ex["TotalCharges"]), step=10.0,
-                                    help="Roughly tenure × monthly charges")
         with c2:
+            st.subheader("Charges (₹)")
+            monthly = st.number_input("Monthly charges (₹)", 0, 50_000, int(ex["MonthlyCharges"]), step=100,
+                                      help=f"Model trained on bills of about {fmt_inr(TRAINED_MONTHLY_INR[0])}"
+                                           f"–{fmt_inr(TRAINED_MONTHLY_INR[1])} per month")
+            total = st.number_input("Total charges so far (₹)", 0, 50_00_000, int(ex["TotalCharges"]), step=1_000,
+                                    help="Roughly tenure × monthly charges")
+            st.caption(f"= ${to_usd(monthly):,.2f} / month, ${to_usd(total):,.2f} total for the model")
+        with c3:
             st.subheader("Services")
-            phone = st.radio("Phone service", ["Yes", "No"], horizontal=True)
-            multi = st.selectbox("Multiple lines", ["No phone service"] if phone == "No" else ["No", "Yes"])
             internet = st.selectbox("Internet service", ALLOWED["InternetService"],
                                     index=ALLOWED["InternetService"].index(ex["InternetService"]))
             addon_opts = ["No internet service"] if internet == "No" else ["No", "Yes"]
             security = st.selectbox("Online security", addon_opts)
-            backup = st.selectbox("Online backup", addon_opts)
-        with c3:
-            st.subheader("Add-ons & customer")
-            protection = st.selectbox("Device protection", addon_opts)
             support = st.selectbox("Tech support", addon_opts)
-            tv = st.selectbox("Streaming TV", addon_opts, index=len(addon_opts) - 1)
-            movies = st.selectbox("Streaming movies", addon_opts)
-            gender = st.radio("Gender", ["Female", "Male"], horizontal=True)
-            senior = st.radio("Senior citizen (65+)", ["No", "Yes"], horizontal=True)
-            partner = st.radio("Partner", ["No", "Yes"], horizontal=True)
-            dependents = st.radio("Dependents", ["No", "Yes"], horizontal=True)
+            multi = st.selectbox("Multiple phone lines", ["No", "Yes", "No phone service"])
         submitted = st.form_submit_button("Predict churn risk", type="primary", use_container_width=True)
 
     if submitted:
         customer = {
-            "gender": gender, "SeniorCitizen": int(senior == "Yes"), "Partner": partner, "Dependents": dependents,
-            "tenure": tenure, "PhoneService": phone, "MultipleLines": multi, "InternetService": internet,
-            "OnlineSecurity": security, "OnlineBackup": backup, "DeviceProtection": protection,
-            "TechSupport": support, "StreamingTV": tv, "StreamingMovies": movies, "Contract": contract,
-            "PaperlessBilling": paperless, "PaymentMethod": payment,
+            "tenure": tenure, "Contract": contract, "PaymentMethod": payment,
             "MonthlyCharges": monthly, "TotalCharges": total,
+            "InternetService": internet, "OnlineSecurity": security, "TechSupport": support,
+            "MultipleLines": multi,
         }
+        if not TRAINED_MONTHLY_INR[0] * 0.8 <= monthly <= TRAINED_MONTHLY_INR[1] * 1.2:
+            st.warning(f"Monthly charges of {fmt_inr(monthly)} are outside the range the model learned from "
+                       f"({fmt_inr(TRAINED_MONTHLY_INR[0])}–{fmt_inr(TRAINED_MONTHLY_INR[1])}). "
+                       "Treat this prediction with caution.")
         try:
             with st.spinner("Scoring and explaining..."):
-                r = predict_one(customer)
+                r = predict_one(customer, currency="INR")
         except ValueError as e:
             st.error(f"Input problem: {e}")
             st.stop()
@@ -107,8 +107,8 @@ with tab_one:
         with right:
             st.markdown("**Why — top factors for this customer**")
             reasons = pd.DataFrame(r["reasons"])
-            labels = [f"{f} = {v}" for f, v in zip(reasons.feature, reasons.value)][::-1]
-            impacts = reasons.impact.tolist()[::-1]
+            labels = reasons["display"].tolist()[::-1]
+            impacts = reasons["impact"].tolist()[::-1]
             fig, ax = plt.subplots(figsize=(6.5, 0.45 * len(labels) + 0.6))
             ax.barh(labels, impacts, color=[RAISES if v > 0 else LOWERS for v in impacts], height=0.6)
             ax.axvline(0, color="#52514e", linewidth=1)
@@ -131,13 +131,15 @@ with tab_one:
 
 # ---------------------------------------------------------------- batch
 with tab_batch:
-    st.write("Upload a CSV with the same columns as the Telco dataset (a `customerID` column is kept if present; "
-             "a `Churn` column is ignored).")
+    st.write(f"Upload a CSV with these columns: `{'`, `'.join(FEATURES)}`. "
+             "Other columns are ignored; a `customerID` column is kept in the results.")
+    unit = st.radio("Charges in this file are in", ["₹ Indian rupees", "$ US dollars (original Kaggle file)"],
+                    horizontal=True)
     file = st.file_uploader("Customer CSV", type="csv")
     if file is not None:
         try:
             df = pd.read_csv(file)
-            scored = predict_batch(df)
+            scored = predict_batch(df, currency="INR" if unit.startswith("₹") else "USD")
         except ValueError as e:
             st.error(str(e))
             st.stop()
@@ -156,13 +158,20 @@ with tab_batch:
 with tab_about:
     t = metrics["tuned_threshold"]
     st.markdown(f"""
-**Model:** {bundle['model_name']} (`class_weight='balanced'`), trained {bundle['trained_on']} on 5,634 customers.
+**Model:** {bundle['model_name']} (`class_weight='balanced'`), trained {bundle['trained_on']} on 5,634 customers,
+using **{len(FEATURES)} inputs**: {', '.join(FEATURES)}.
+The other 10 fields in the dataset (gender, senior citizen, partner, dependents, phone service, paperless billing,
+online backup, device protection, streaming TV/movies) were dropped: removing them did not reduce accuracy.
 
 **Held-out test set (1,409 customers):** ROC-AUC {metrics['roc_auc']:.3f} · recall {t['recall']:.2f} ·
 precision {t['precision']:.2f} · F1 {t['f1']:.2f}.
 Of {t['confusion']['tp'] + t['confusion']['fn']} customers who churned, the model flagged {t['confusion']['tp']}.
 
 **Threshold {bundle['threshold']:.2f}:** the highest cut-off that still catches ≥ 80% of churners in cross-validation.
+
+**Currency:** you enter charges in ₹; they are converted at 1 $ = ₹{USD_TO_INR} ({RATE_SOURCE}) because the
+training data is in US dollars. Bills far outside {fmt_inr(TRAINED_MONTHLY_INR[0])}–{fmt_inr(TRAINED_MONTHLY_INR[1])}
+per month are outside what the model has seen.
 
 **Explanations** are Shapley values against 100 reference customers — they show which inputs pushed this
 prediction up or down. They describe what the model learned from historical data, not proven causes.

@@ -1,5 +1,5 @@
 model,recall,precision,f1,roc_auc,roc_auc_std,fit_seconds
-Logistic Regression,0.8027,0.5178,0.6293,0.846,0.0124,0.2905
-Random Forest,0.7672,0.5386,0.6328,0.8448,0.0099,4.7439
-HistGradientBoosting,0.7311,0.546,0.6251,0.8372,0.0092,2.5282
-Decision Tree,0.7873,0.5023,0.6129,0.8252,0.0095,0.3509
+Logistic Regression,0.7973,0.5113,0.6229,0.8444,0.0139,0.1998
+Random Forest,0.7652,0.5389,0.6322,0.8411,0.0116,4.7577
+HistGradientBoosting,0.7438,0.5346,0.6221,0.8368,0.0109,2.7437
+Decision Tree,0.7893,0.4964,0.6093,0.8252,0.0101,0.192

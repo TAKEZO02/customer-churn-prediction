@@ -3,249 +3,229 @@
   "n_customers_global": 200,
   "n_background": 100,
   "n_permutations": 100,
-  "base_value": 0.4363,
-  "additivity_error": 0.02077,
+  "base_value": 0.4352,
+  "additivity_error": 0.02155,
   "global_importance": {
-    "Contract": 0.1105,
-    "InternetService": 0.0621,
-    "tenure": 0.0504,
-    "OnlineSecurity": 0.0394,
-    "TotalCharges": 0.032,
-    "TechSupport": 0.03,
-    "PaymentMethod": 0.0229,
-    "MonthlyCharges": 0.0184,
-    "OnlineBackup": 0.0165,
-    "StreamingTV": 0.014,
-    "StreamingMovies": 0.0136,
-    "DeviceProtection": 0.0092,
-    "MultipleLines": 0.0086,
-    "PaperlessBilling": 0.0079,
-    "Dependents": 0.0035,
-    "SeniorCitizen": 0.0026,
-    "Partner": 0.0019,
-    "gender": 0.0018,
-    "PhoneService": 0.0012
+    "Contract": 0.1112,
+    "InternetService": 0.0779,
+    "tenure": 0.053,
+    "OnlineSecurity": 0.047,
+    "TechSupport": 0.0357,
+    "TotalCharges": 0.0302,
+    "PaymentMethod": 0.0276,
+    "MonthlyCharges": 0.0267,
+    "MultipleLines": 0.0129
   },
   "permutation_importance_auc_drop": {
-    "Contract": 0.0705,
-    "tenure": 0.0228,
-    "InternetService": 0.0152,
-    "TotalCharges": 0.0142,
-    "OnlineSecurity": 0.0056,
-    "TechSupport": 0.0039,
-    "PaymentMethod": 0.0025,
-    "MultipleLines": 0.0012,
-    "MonthlyCharges": 0.0012,
-    "StreamingMovies": 0.0011,
-    "OnlineBackup": 0.0011,
-    "PaperlessBilling": 0.001,
-    "StreamingTV": 0.0006,
-    "SeniorCitizen": 0.0006,
-    "Dependents": 0.0002,
-    "PhoneService": 0.0002,
-    "Partner": -0.0001,
-    "DeviceProtection": -0.0002,
-    "gender": -0.0002
+    "Contract": 0.0726,
+    "tenure": 0.0256,
+    "InternetService": 0.0252,
+    "TotalCharges": 0.013,
+    "OnlineSecurity": 0.0091,
+    "TechSupport": 0.0052,
+    "PaymentMethod": 0.0034,
+    "MultipleLines": 0.003,
+    "MonthlyCharges": 0.003
   },
   "mean_shap_by_value": [
     {
       "feature": "Contract",
       "value": "Month-to-month",
-      "mean_shap": 0.0915,
+      "mean_shap": 0.0916,
       "customers": 110
     },
     {
       "feature": "Contract",
       "value": "One year",
-      "mean_shap": -0.0855,
+      "mean_shap": -0.0891,
       "customers": 40
     },
     {
       "feature": "Contract",
       "value": "Two year",
-      "mean_shap": -0.1721,
+      "mean_shap": -0.1718,
       "customers": 50
     },
     {
       "feature": "InternetService",
       "value": "DSL",
-      "mean_shap": -0.072,
+      "mean_shap": -0.0731,
       "customers": 66
     },
     {
       "feature": "InternetService",
       "value": "Fiber optic",
-      "mean_shap": 0.0637,
+      "mean_shap": 0.0773,
       "customers": 89
     },
     {
       "feature": "InternetService",
       "value": "No",
-      "mean_shap": -0.0445,
+      "mean_shap": -0.0862,
       "customers": 45
     },
     {
       "feature": "tenure",
       "value": "0-12",
-      "mean_shap": 0.0771,
+      "mean_shap": 0.081,
       "customers": 61
     },
     {
       "feature": "tenure",
       "value": "13-24",
-      "mean_shap": 0.0121,
+      "mean_shap": 0.0058,
       "customers": 26
     },
     {
       "feature": "tenure",
       "value": "25-48",
-      "mean_shap": -0.0293,
+      "mean_shap": -0.0312,
       "customers": 46
     },
     {
       "feature": "tenure",
       "value": "49-72",
-      "mean_shap": -0.0529,
+      "mean_shap": -0.0577,
       "customers": 67
     },
     {
       "feature": "OnlineSecurity",
       "value": "No",
-      "mean_shap": 0.0379,
+      "mean_shap": 0.0442,
       "customers": 105
     },
     {
       "feature": "OnlineSecurity",
       "value": "No internet service",
-      "mean_shap": -0.0469,
+      "mean_shap": -0.0637,
       "customers": 45
     },
     {
       "feature": "OnlineSecurity",
       "value": "Yes",
-      "mean_shap": -0.0357,
-      "customers": 50
-    },
-    {
-      "feature": "TotalCharges",
-      "value": "high",
-      "mean_shap": -0.0358,
-      "customers": 50
-    },
-    {
-      "feature": "TotalCharges",
-      "value": "low",
-      "mean_shap": 0.0545,
-      "customers": 50
-    },
-    {
-      "feature": "TotalCharges",
-      "value": "mid-high",
-      "mean_shap": -0.0216,
-      "customers": 50
-    },
-    {
-      "feature": "TotalCharges",
-      "value": "mid-low",
-      "mean_shap": 0.0114,
+      "mean_shap": -0.0381,
       "customers": 50
     },
     {
       "feature": "TechSupport",
       "value": "No",
-      "mean_shap": 0.0268,
+      "mean_shap": 0.0312,
       "customers": 108
     },
     {
       "feature": "TechSupport",
       "value": "No internet service",
-      "mean_shap": -0.0403,
+      "mean_shap": -0.0557,
       "customers": 45
     },
     {
       "feature": "TechSupport",
       "value": "Yes",
-      "mean_shap": -0.0272,
+      "mean_shap": -0.0271,
       "customers": 47
+    },
+    {
+      "feature": "TotalCharges",
+      "value": "high",
+      "mean_shap": -0.0323,
+      "customers": 50
+    },
+    {
+      "feature": "TotalCharges",
+      "value": "low",
+      "mean_shap": 0.0548,
+      "customers": 50
+    },
+    {
+      "feature": "TotalCharges",
+      "value": "mid-high",
+      "mean_shap": -0.0206,
+      "customers": 50
+    },
+    {
+      "feature": "TotalCharges",
+      "value": "mid-low",
+      "mean_shap": 0.0052,
+      "customers": 50
     },
     {
       "feature": "PaymentMethod",
       "value": "Bank transfer (automatic)",
-      "mean_shap": -0.016,
+      "mean_shap": -0.021,
       "customers": 37
     },
     {
       "feature": "PaymentMethod",
       "value": "Credit card (automatic)",
-      "mean_shap": -0.0207,
+      "mean_shap": -0.0233,
       "customers": 37
     },
     {
       "feature": "PaymentMethod",
       "value": "Electronic check",
-      "mean_shap": 0.0318,
+      "mean_shap": 0.0372,
       "customers": 76
     },
     {
       "feature": "PaymentMethod",
       "value": "Mailed check",
-      "mean_shap": -0.0158,
+      "mean_shap": -0.0208,
       "customers": 50
     },
     {
       "feature": "MonthlyCharges",
       "value": "high",
-      "mean_shap": 0.0292,
+      "mean_shap": 0.0433,
       "customers": 50
     },
     {
       "feature": "MonthlyCharges",
       "value": "low",
-      "mean_shap": -0.0172,
+      "mean_shap": -0.0294,
       "customers": 50
     },
     {
       "feature": "MonthlyCharges",
       "value": "mid-high",
-      "mean_shap": -0.0006,
+      "mean_shap": -0.0039,
       "customers": 50
     },
     {
       "feature": "MonthlyCharges",
       "value": "mid-low",
-      "mean_shap": -0.0197,
+      "mean_shap": -0.023,
       "customers": 50
     }
   ],
   "customers": {
     "high_risk": {
-      "row": 5943,
-      "probability": 0.904,
+      "row": 2631,
+      "probability": 0.917,
       "actual": "churned",
       "top_reasons": {
-        "Contract = Month-to-month": 0.118,
-        "tenure = 1": 0.092,
-        "TotalCharges = 84.85": 0.061
+        "InternetService = Fiber optic": 0.107,
+        "Contract = Month-to-month": 0.104,
+        "tenure = 7": 0.071
       }
     },
     "low_risk": {
-      "row": 3781,
-      "probability": 0.027,
+      "row": 6423,
+      "probability": 0.019,
       "actual": "stayed",
       "top_reasons": {
-        "Contract = One year": -0.092,
-        "OnlineSecurity = No internet service": -0.049,
-        "InternetService = No": -0.049
+        "Contract = Two year": -0.157,
+        "InternetService = No": -0.061,
+        "tenure = 72": -0.054
       }
     },
     "borderline": {
-      "row": 5797,
-      "probability": 0.49,
-      "actual": "stayed",
+      "row": 5430,
+      "probability": 0.493,
+      "actual": "churned",
       "top_reasons": {
-        "Contract = Month-to-month": 0.087,
-        "InternetService = Fiber optic": 0.072,
-        "TechSupport = Yes": -0.038
+        "InternetService = DSL": -0.107,
+        "Contract = Month-to-month": 0.077,
+        "tenure = 10": 0.045
       }
     }
   }

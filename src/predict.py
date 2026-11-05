@@ -1,13 +1,19 @@
-"""Phase 7 — score customers with the saved churn model.
+"""Score customers with the saved churn model (Phase 7; ₹ input + 9 features since v2).
 
     from src.predict import predict_one, predict_batch
 
-    result = predict_one({"gender": "Female", "SeniorCitizen": 0, ..., "TotalCharges": 845.5})
-    # {'probability': 0.83, 'at_risk': True, 'risk_level': 'High', 'threshold': 0.49,
-    #  'reasons': [{'feature': 'Contract', 'value': 'Month-to-month', 'impact': 0.11}, ...],
-    #  'actions': ['Offer a discount to move to a 1- or 2-year contract', ...]}
+    result = predict_one({"Contract": "Month-to-month", "tenure": 3, ...,
+                          "MonthlyCharges": 8130, "TotalCharges": 24390})   # charges in ₹
+    # {'probability': 0.85, 'at_risk': True, 'risk_level': 'High', 'threshold': 0.49,
+    #  'reasons': [{'feature': 'Contract', 'value': 'Month-to-month', 'impact': 0.12}, ...],
+    #  'actions': ['Offer a discount ...', ...]}
 
     python -m src.predict            # scores an example customer from the command line
+
+Only the model's input features are needed (see src/features.py — currently 9); extra
+fields are ignored. Charges are in ₹ by default (currency="INR") and converted to $ for
+the model (src/currency.py). Pass currency="USD" for data already in dollars, e.g. the
+original Kaggle CSV.
 
 Reasons are Shapley values (see src/explain.py) computed against a fixed sample of
 100 training customers stored in models/background.csv.
@@ -18,6 +24,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from src.currency import CHARGE_COLS, fmt_inr, to_usd
 from src.data_prep import PROJECT_ROOT, clean, split
 from src.explain import sampling_shapley
 from src.load_data import load_raw
@@ -44,7 +51,7 @@ ALLOWED = {
     "PaperlessBilling": ["Yes", "No"],
     "PaymentMethod": ["Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"],
 }
-NUMERIC_RANGES = {"tenure": (0, 100), "MonthlyCharges": (0, 500), "TotalCharges": (0, 50_000)}
+NUMERIC_RANGES_USD = {"tenure": (0, 100), "MonthlyCharges": (0, 500), "TotalCharges": (0, 50_000)}
 
 # Retention action for a feature value that pushes a customer TOWARD churn (Phase 6 findings)
 ACTIONS = {
@@ -68,36 +75,47 @@ def load_model():
     return joblib.load(MODEL_PATH)
 
 
+def feature_columns() -> list:
+    return list(load_model()["feature_columns"])
+
+
 @lru_cache(maxsize=1)
 def load_background() -> pd.DataFrame:
-    cols = load_model()["feature_columns"]
-    if BACKGROUND_PATH.exists():
-        bg = pd.read_csv(BACKGROUND_PATH)
-    else:
+    """100 training customers (charges in $) — the reference point for explanations."""
+    cols = feature_columns()
+    bg = pd.read_csv(BACKGROUND_PATH) if BACKGROUND_PATH.exists() else None
+    if bg is None or not set(cols) <= set(bg.columns):
         X_train, _, _, _ = split(clean(load_raw()))
         bg = X_train.sample(100, random_state=42)
         bg.to_csv(BACKGROUND_PATH, index=False)
     return bg[cols]
 
 
-def validate(customer: dict) -> pd.DataFrame:
-    """Check fields + values; return a one-row DataFrame in model column order."""
-    cols = load_model()["feature_columns"]
+def validate(customer: dict, currency: str = "INR") -> pd.DataFrame:
+    """Check the model's input fields; return a one-row DataFrame in $ and model column order."""
+    if currency not in ("INR", "USD"):
+        raise ValueError("currency must be 'INR' or 'USD'")
+    cols = feature_columns()
     missing = [c for c in cols if c not in customer]
     if missing:
         raise ValueError(f"Missing fields: {missing}")
-    for f, allowed in ALLOWED.items():
-        if customer[f] not in allowed:
-            raise ValueError(f"{f}={customer[f]!r} not in {allowed}")
-    for f, (lo, hi) in NUMERIC_RANGES.items():
-        v = float(customer[f])
-        if not lo <= v <= hi:
-            raise ValueError(f"{f}={v} outside {lo}–{hi}")
+    for f in cols:
+        if f in ALLOWED and customer[f] not in ALLOWED[f]:
+            raise ValueError(f"{f}={customer[f]!r} not in {ALLOWED[f]}")
     row = pd.DataFrame([{c: customer[c] for c in cols}])
-    for f in NUMERIC_RANGES:
-        row[f] = row[f].astype(float)
-    row["tenure"] = row["tenure"].astype(int)
-    row["SeniorCitizen"] = row["SeniorCitizen"].astype(int)
+    for f in cols:
+        if f in NUMERIC_RANGES_USD:
+            v = float(customer[f])
+            if f in CHARGE_COLS and currency == "INR":
+                v = to_usd(v)
+            lo, hi = NUMERIC_RANGES_USD[f]
+            if not lo <= v <= hi:
+                raise ValueError(f"{f}={customer[f]} outside the allowed range")
+            row[f] = v
+    if "tenure" in row:
+        row["tenure"] = row["tenure"].astype(int)
+    if "SeniorCitizen" in row:
+        row["SeniorCitizen"] = row["SeniorCitizen"].astype(int)
     return row
 
 
@@ -120,32 +138,53 @@ def suggest_actions(reasons, customer) -> list:
     return list(dict.fromkeys(out))  # unique, keep order
 
 
-def predict_one(customer: dict, explain: bool = True, top_n: int = 5, n_permutations: int = 60) -> dict:
+def _display_value(feature, value, currency):
+    if feature in CHARGE_COLS:
+        return fmt_inr(value) if currency == "INR" else f"${float(value):,.2f}"
+    return value
+
+
+def predict_one(customer: dict, currency: str = "INR", explain: bool = True,
+                top_n: int = 5, n_permutations: int = 60) -> dict:
     bundle = load_model()
     pipe, threshold = bundle["pipeline"], bundle["threshold"]
-    row = validate(customer)
+    row = validate(customer, currency)
     p = float(pipe.predict_proba(row)[:, 1][0])
     result = {"probability": round(p, 4), "at_risk": p >= threshold,
-              "risk_level": risk_level(p, threshold), "threshold": round(threshold, 4), "model": bundle["model_name"]}
+              "risk_level": risk_level(p, threshold), "threshold": round(threshold, 4),
+              "model": bundle["model_name"], "currency": currency}
     if explain:
         vals, base, _ = sampling_shapley(lambda df: pipe.predict_proba(df)[:, 1], row, load_background(),
                                          n_permutations=n_permutations, seed=0)
         s = pd.Series(vals[0], index=row.columns)
         top = s.reindex(s.abs().sort_values(ascending=False).index).head(top_n)
         result["base_value"] = round(base, 4)
-        result["reasons"] = [{"feature": f, "value": customer[f], "impact": round(float(v), 4)} for f, v in top.items()]
+        result["reasons"] = [{"feature": f, "value": customer[f],
+                              "display": f"{f} = {_display_value(f, customer[f], currency)}",
+                              "impact": round(float(v), 4)} for f, v in top.items()]
         result["actions"] = suggest_actions(result["reasons"], customer) if result["at_risk"] else []
     return result
 
 
-def predict_batch(df: pd.DataFrame) -> pd.DataFrame:
-    """Score many customers (no explanations). Accepts the raw CSV format (TotalCharges as text OK)."""
+def predict_batch(df: pd.DataFrame, currency: str = "USD") -> pd.DataFrame:
+    """Score many customers (no explanations).
+
+    Needs the model's input columns (extra columns are ignored). currency = the unit of
+    MonthlyCharges/TotalCharges in the file: "USD" for the original Kaggle CSV, "INR" for ₹.
+    """
     bundle = load_model()
-    cols = bundle["feature_columns"]
+    cols = feature_columns()
     missing = [c for c in cols if c not in df.columns]
     if missing:
         raise ValueError(f"CSV is missing columns: {missing}")
-    X = clean(df.drop(columns=["Churn"], errors="ignore"))[cols]
+    X = df[cols].copy()
+    if "TotalCharges" in X:
+        X["TotalCharges"] = pd.to_numeric(X["TotalCharges"].astype(str).str.strip().replace("", "0"),
+                                          errors="coerce").fillna(0.0)
+    if currency == "INR":
+        for c in CHARGE_COLS:
+            if c in X:
+                X[c] = X[c].astype(float).map(to_usd)
     p = bundle["pipeline"].predict_proba(X)[:, 1]
     out = df[[c for c in ["customerID"] if c in df.columns]].copy()
     out["churn_probability"] = np.round(p, 4)
@@ -154,13 +193,11 @@ def predict_batch(df: pd.DataFrame) -> pd.DataFrame:
     return out.sort_values("churn_probability", ascending=False)
 
 
+# A risky customer; charges in ₹ (≈ $85.70 / month, $257.10 total)
 EXAMPLE_CUSTOMER = {
-    "gender": "Female", "SeniorCitizen": 0, "Partner": "No", "Dependents": "No", "tenure": 3,
-    "PhoneService": "Yes", "MultipleLines": "No", "InternetService": "Fiber optic",
-    "OnlineSecurity": "No", "OnlineBackup": "No", "DeviceProtection": "No", "TechSupport": "No",
-    "StreamingTV": "Yes", "StreamingMovies": "No", "Contract": "Month-to-month",
-    "PaperlessBilling": "Yes", "PaymentMethod": "Electronic check",
-    "MonthlyCharges": 85.70, "TotalCharges": 257.10,
+    "Contract": "Month-to-month", "tenure": 3, "InternetService": "Fiber optic",
+    "OnlineSecurity": "No", "TechSupport": "No", "PaymentMethod": "Electronic check",
+    "MultipleLines": "No", "MonthlyCharges": 8130, "TotalCharges": 24390,
 }
 
 if __name__ == "__main__":
@@ -168,6 +205,6 @@ if __name__ == "__main__":
     print(f"Churn probability {r['probability']:.1%}  ->  {r['risk_level']} risk "
           f"({'AT RISK' if r['at_risk'] else 'not flagged'}, threshold {r['threshold']})")
     for x in r["reasons"]:
-        print(f"  {x['impact']:+.3f}  {x['feature']} = {x['value']}")
+        print(f"  {x['impact']:+.3f}  {x['display']}")
     for a in r["actions"]:
         print("  action:", a)

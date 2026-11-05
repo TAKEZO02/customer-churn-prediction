@@ -27,6 +27,7 @@ import pandas as pd
 from sklearn.inspection import permutation_importance
 
 from src.data_prep import PROJECT_ROOT, clean, split
+from src.currency import CHARGE_COLS, fmt_inr, to_inr
 from src.load_data import NUMERIC_COLS, load_raw
 
 SEED = 42
@@ -156,7 +157,7 @@ def plot_by_value(tbl: pd.DataFrame, features):
     for ax in list(axes.flat)[n:]:
         ax.axis("off")
     fig.text(0.01, -0.01, "Average SHAP value per group. Orange = raises churn probability, blue = lowers it. "
-             "Numeric features grouped (tenure in months, charges in quartiles).", color=QUIET, fontsize=9)
+             "Numeric features grouped (tenure in months, ₹ charges in quartiles).", color=QUIET, fontsize=9)
     fig.tight_layout(); fig.savefig(FIGS / "12_shap_by_value.png", dpi=150, bbox_inches="tight")
     plt.close(fig)
 
@@ -165,7 +166,8 @@ def plot_waterfall(values: pd.Series, x: pd.Series, base: float, pred: float, ti
     import matplotlib.pyplot as plt
     order = values.abs().sort_values(ascending=False).index
     shown, rest = order[:top], values[order[top:]].sum()
-    items = [(f"{f} = {x[f]}", values[f]) for f in shown]
+    from src.currency import CHARGE_COLS, fmt_inr, to_inr
+    items = [(f"{f} = {fmt_inr(to_inr(x[f])) if f in CHARGE_COLS else x[f]}", values[f]) for f in shown]
     if len(order) > top:
         items.append((f"{len(order) - top} other features", rest))
     items = items[::-1]
@@ -264,7 +266,8 @@ def main(n_explain=200, n_background=100, n_permutations=100):
         plot_waterfall(sv.loc[idx], X_test.loc[idx], base, p, title, FIGS / f"13_shap_customer_{tag}.png")
         top3 = sv.loc[idx].sort_values(key=abs, ascending=False).head(3)
         customers[tag] = {"row": int(idx), "probability": round(p, 3), "actual": actual,
-                          "top_reasons": {f"{f} = {X_test.loc[idx, f]}": round(float(v), 3) for f, v in top3.items()}}
+                          "top_reasons": {f"{f} = {fmt_inr(to_inr(X_test.loc[idx, f])) if f in CHARGE_COLS else X_test.loc[idx, f]}":
+                                          round(float(v), 3) for f, v in top3.items()}}
         print(f"  {tag:<11} p={p:.2f} ({actual}) top: {customers[tag]['top_reasons']}")
 
     summary = {

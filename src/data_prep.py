@@ -69,7 +69,8 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_preprocessor(numeric_cols=NUMERIC_COLS, categorical_cols=CATEGORICAL_COLS,
-                       passthrough_cols=BINARY_INT_COLS, engineered: bool = False) -> ColumnTransformer:
+                       passthrough_cols=BINARY_INT_COLS, engineered: bool = False,
+                       features=None) -> ColumnTransformer:
     """Step 3.3 + 3.5 — unfitted ColumnTransformer.
 
     - numeric: StandardScaler
@@ -77,10 +78,16 @@ def build_preprocessor(numeric_cols=NUMERIC_COLS, categorical_cols=CATEGORICAL_C
       multi-level columns get one column per level; unseen levels at predict time are ignored
     - SeniorCitizen: already 0/1, passed through
     - engineered=True adds the Phase 4 columns (input must come from add_features)
+    - features=[...] keeps only those input columns (feature reduction, src/features.py)
     """
     if engineered:
         numeric_cols = list(numeric_cols) + ENGINEERED_NUMERIC
         categorical_cols = list(categorical_cols) + ENGINEERED_CATEGORICAL
+    if features is not None:
+        keep = set(features)
+        numeric_cols = [c for c in numeric_cols if c in keep]
+        categorical_cols = [c for c in categorical_cols if c in keep]
+        passthrough_cols = [c for c in passthrough_cols if c in keep]
     return ColumnTransformer(
         transformers=[
             ("num", StandardScaler(), list(numeric_cols)),
@@ -99,7 +106,7 @@ def split(df: pd.DataFrame, test_size: float = TEST_SIZE, random_state: int = RA
     return train_test_split(X, y, test_size=test_size, stratify=y, random_state=random_state)
 
 
-def prepare(path=None, fit: bool = True, engineered: bool = False):
+def prepare(path=None, fit: bool = True, engineered: bool = False, features=None):
     """Raw CSV -> (X_train, X_test, y_train, y_test, preprocessor).
 
     With fit=True (default) the preprocessor is fitted on X_train only and
@@ -109,12 +116,15 @@ def prepare(path=None, fit: bool = True, engineered: bool = False):
     model Pipeline / cross-validation (Phase 5) so scaling is refit per fold.
     engineered=True adds the Phase 4 features. Default False: in the Phase 4 CV
     experiment they gave no gain (ROC-AUC unchanged), so the simpler 40-feature set is used.
+    features=[...] keeps only those input columns (see src/features.py).
     """
     df = clean(load_raw(path) if path else load_raw())
     if engineered:
         df = add_features(df)
     X_train, X_test, y_train, y_test = split(df)
-    pre = build_preprocessor(engineered=engineered)
+    if features is not None:
+        X_train, X_test = X_train[list(features)], X_test[list(features)]
+    pre = build_preprocessor(engineered=engineered, features=features)
     if not fit:
         return X_train, X_test, y_train, y_test, pre
     pre.set_output(transform="pandas")

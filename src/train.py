@@ -35,7 +35,8 @@ from sklearn.model_selection import (RandomizedSearchCV, StratifiedKFold,
 from sklearn.pipeline import Pipeline
 from sklearn.tree import DecisionTreeClassifier
 
-from src.data_prep import PROJECT_ROOT, prepare
+from src.data_prep import ENGINEERED_CATEGORICAL, ENGINEERED_NUMERIC, PROJECT_ROOT, prepare
+from src.features import SELECTED_FEATURES
 
 SEED = 42
 TARGET_RECALL = 0.80
@@ -236,7 +237,8 @@ def main():
     matplotlib.use("Agg")
     FIGS.mkdir(parents=True, exist_ok=True); MODELS_DIR.mkdir(exist_ok=True)
 
-    X_train, X_test, y_train, y_test, pre = prepare(fit=False)
+    X_train, X_test, y_train, y_test, pre = prepare(fit=False, features=SELECTED_FEATURES)
+    print(f"Input features: {len(X_train.columns)} -> {list(X_train.columns)}")
     pos_weight = float((y_train == 0).sum() / (y_train == 1).sum())
     models = candidate_models(pos_weight)
 
@@ -252,7 +254,8 @@ def main():
     # Engineered-feature re-check (Phase 4 follow-up) on the best tuned model
     best_name = tuned.loc[0, "model"]
     best_pipe = fitted[best_name]
-    Xe_tr, _, ye_tr, _, pre_e = prepare(fit=False, engineered=True)
+    eng_feats = None if SELECTED_FEATURES is None else SELECTED_FEATURES + ENGINEERED_NUMERIC + ENGINEERED_CATEGORICAL
+    Xe_tr, _, ye_tr, _, pre_e = prepare(fit=False, engineered=True, features=eng_feats)
     eng_pipe = Pipeline([("preprocess", pre_e), ("model", clone(best_pipe.named_steps["model"]))])
     eng_auc = cross_validate(eng_pipe, Xe_tr, ye_tr, cv=CV, scoring="roc_auc")["test_score"].mean()
     print(f"\nEngineered features with {best_name}: CV ROC-AUC {eng_auc:.4f} "

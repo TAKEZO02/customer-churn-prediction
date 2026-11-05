@@ -1,6 +1,7 @@
 # Customer Churn Prediction Using Machine Learning
 
 Predict which telecom customers are likely to leave, explain why, and serve predictions through a Streamlit web app.
+The model needs just **9 inputs** and the app takes charges in **₹** (the dataset is in US $; see `src/currency.py`).
 
 > **Status:** in progress — see [`CONTINUITY.md`](CONTINUITY.md) for exact progress, tools used and what's next.
 
