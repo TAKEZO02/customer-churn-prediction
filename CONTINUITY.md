@@ -14,11 +14,11 @@
 | Project | Customer Churn Prediction Using Machine Learning |
 | Dataset | IBM Telco Customer Churn (Kaggle) |
 | Goal | Predict which customers will churn, explain why, serve predictions via a web app |
-| Current phase | Phase 1 — Data collection & understanding (next) |
-| Overall progress | 3 / 35 tasks (9%) |
+| Current phase | Phase 1 — Data collection & understanding (in progress — waiting for dataset) |
+| Overall progress | 4 / 35 tasks (11%) |
 | Last updated | 2026-11-05 |
-| Next immediate action | Download Telco Customer Churn CSV into `data/raw/` |
-| Blockers | Push to GitHub is a manual step (create empty repo, then `git remote add origin <url>` + `git push -u origin main`) |
+| Next immediate action | Put `WA_Fn-UseC_-Telco-Customer-Churn.csv` in `data/raw/`, run `python -m src.data_check`, copy numbers into Section 5 |
+| Blockers | Real dataset not yet added (download from Kaggle: "Telco Customer Churn" by blastchar). Push to GitHub is a manual step (create empty repo, then `git remote add origin <url>` + `git push -u origin main`) |
 
 **How % is calculated:** ticked tasks in Section 2 ÷ 35 total tasks × 100.
 
@@ -27,7 +27,7 @@
 | Phase | Name | Tasks | Done | Status |
 | --- | --- | --- | --- | --- |
 | 0 | Setup | 3 | 3 | Done (local; GitHub push by you) |
-| 1 | Data collection & understanding | 3 | 0 | Not started |
+| 1 | Data collection & understanding | 3 | 1 | In progress (tooling ready, needs CSV) |
 | 2 | Exploratory data analysis | 4 | 0 | Not started |
 | 3 | Cleaning & preprocessing | 5 | 0 | Not started |
 | 4 | Feature engineering & imbalance | 2 | 0 | Not started |
@@ -36,7 +36,7 @@
 | 7 | Deployment | 4 | 0 | Not started |
 | 8 | Documentation & presentation | 3 | 0 | Not started |
 | — | Final wrap-up | 2 | 0 | Not started |
-| **Total** | | **35** | **3** | |
+| **Total** | | **35** | **4** | |
 
 Status values: `Not started` · `In progress` · `Done`
 
@@ -56,10 +56,11 @@ Tick `[x]` only when the phase's **Done when** check is met.
 
 ### Phase 1 — Data collection & understanding
 - [ ] 1.1 Download Telco Customer Churn CSV into `data/raw/`
-- [ ] 1.2 Write data dictionary (column, type, meaning)
+- [x] 1.2 Write data dictionary (column, type, meaning)
 - [ ] 1.3 Check shape, nulls, duplicates, churn class balance
 
 **Done when:** rows, columns, missing values and churn % are recorded in Section 5.
+> Status: `src/load_data.py`, `src/data_check.py` and `data/data_dictionary.md` are built and tested (pytest on a SYNTHETIC sample). To finish 1.1 + 1.3: add the real CSV, run `python -m src.data_check`, which writes `reports/data_quality_report.md`; then tick 1.1 and 1.3 and fill Section 5.
 
 ### Phase 2 — Exploratory data analysis (`notebooks/01_eda.ipynb`)
 - [ ] 2.1 Churn rate by Contract, tenure, InternetService, PaymentMethod
@@ -131,6 +132,9 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | Python | 3.13 | 0 | Project runtime |
 | Git | system | 0 | Local repo + first commit |
 | venv + requirements.txt | — | 0 | Dependency list for reproducible setup |
+| pandas | 3.0 | 1 | Load CSV, data-quality checks |
+| NumPy | 2.x | 1 | Synthetic test fixture |
+| pytest | 9.x | 1 | Tests for loader + data check (`pytest -q`) |
 
 ---
 
@@ -140,7 +144,6 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | --- | --- | --- | --- |
 | GitHub (remote) | 0 | Host the repo — push manually | github.com |
 | Jupyter Notebook / VS Code | 0 | Editor | `pip install notebook` |
-| Pandas, NumPy | 1–3 | Data handling | `pip install pandas numpy` |
 | Matplotlib, Seaborn | 2 | EDA charts | `pip install matplotlib seaborn` |
 | Plotly (optional) | 2 | Interactive charts | `pip install plotly` |
 | scikit-learn | 3–5 | Preprocessing, models, metrics | `pip install scikit-learn` |
@@ -152,7 +155,6 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | SHAP | 6 | Explainability | `pip install shap` |
 | Streamlit | 7 | Web app | `pip install streamlit` |
 | FastAPI + Uvicorn (optional) | 7 | REST API | `pip install fastapi uvicorn` |
-| pytest | 7 | Tests | `pip install pytest` |
 | Streamlit Community Cloud | 7 | Hosting | share.streamlit.io |
 
 ---
@@ -163,8 +165,8 @@ Record every decision that someone resuming the project must know.
 
 | Date | Decision / Result | Reason / Value |
 | --- | --- | --- |
-| | Dataset shape | _rows × columns_ |
-| | Churn % | _e.g. ~26%_ |
+| | Dataset shape | _rows × columns — fill from data_quality_report.md (expected ≈ 7,043 × 21)_ |
+| | Churn % | _fill from report (expected ≈ 26.5%)_ |
 | | Missing-value handling | |
 | | Imbalance method | _class_weight or SMOTE, and why_ |
 | | Best model | |
@@ -179,6 +181,12 @@ Record every decision that someone resuming the project must know.
 | Path | What it does | Status |
 | --- | --- | --- |
 | `data/raw/` | Original Kaggle CSV (never edited) | Folder created, CSV pending |
+| `data/data_dictionary.md` | All 21 columns: type, values, meaning, modelling note | Done |
+| `src/load_data.py` | `load_raw()` + column groups (numeric / categorical / target) | Done |
+| `src/data_check.py` | Data-quality check → `reports/data_quality_report.md` | Done (run on real CSV pending) |
+| `tests/test_data_check.py` | Tests for loader + data check | Done (3 pass, 1 skips until real CSV) |
+| `tests/make_sample_fixture.py` + `tests/fixtures/sample_telco_SYNTHETIC.csv` | SYNTHETIC 200-row sample for tests only — never for results | Done |
+| `pytest.ini` | Lets tests import `src` | Done |
 | `data/processed/` | Cleaned, encoded data | Folder created |
 | `notebooks/01_eda.ipynb` | EDA + insights | Not created |
 | `notebooks/02_preprocessing.ipynb` | Cleaning experiments | Not created |
@@ -205,6 +213,7 @@ Newest first. One line per session.
 
 | Date | Phase | What was done | Next step / Blockers |
 | --- | --- | --- | --- |
+| 2026-11-05 | 1 | Data dictionary, loader, data-quality check, tests + synthetic fixture (3 tests pass) | Add real CSV → run `python -m src.data_check` → tick 1.1, 1.3 |
 | 2026-11-05 | 0 | Folder skeleton, requirements.txt, .gitignore, README, check_progress.py, first git commit | Phase 1: add Telco CSV to data/raw/; push repo to GitHub |
 | 2026-11-05 | — | Project planned; CONTINUITY.md created | Create repo + folders |
 

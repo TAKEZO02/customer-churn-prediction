@@ -1,0 +1,201 @@
+customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn
+0000-SYNTH,Female,0,No,Yes,0,Yes,Yes,Fiber optic,No,No,No,No,No,Yes,One year,No,Mailed check,92.29, ,No
+0001-SYNTH,Male,0,Yes,Yes,22,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Electronic check,107.33,2361.26,No
+0002-SYNTH,Male,1,Yes,Yes,37,Yes,No,Fiber optic,No,No,No,No,Yes,Yes,Two year,Yes,Mailed check,110.82,4100.34,No
+0003-SYNTH,Male,0,Yes,Yes,67,Yes,No,DSL,No,Yes,No,Yes,No,No,Month-to-month,Yes,Credit card (automatic),68.87,4614.29,No
+0004-SYNTH,Male,0,No,Yes,53,Yes,Yes,DSL,No,Yes,No,Yes,Yes,No,One year,Yes,Mailed check,70.54,3738.62,No
+0005-SYNTH,Male,0,Yes,No,57,No,No phone service,DSL,No,No,Yes,No,Yes,Yes,Month-to-month,No,Credit card (automatic),98.64,5622.48,No
+0006-SYNTH,Male,0,Yes,Yes,39,Yes,Yes,DSL,No,Yes,No,No,Yes,Yes,Month-to-month,No,Mailed check,49.85,1944.15,No
+0007-SYNTH,Female,0,Yes,No,8,Yes,No,Fiber optic,Yes,Yes,Yes,No,No,No,Month-to-month,No,Electronic check,102.41,819.28,No
+0008-SYNTH,Male,0,No,Yes,28,Yes,Yes,DSL,No,No,No,Yes,No,No,Two year,Yes,Mailed check,67.91,1901.48,No
+0009-SYNTH,Male,1,No,Yes,72,Yes,Yes,Fiber optic,No,Yes,No,Yes,Yes,No,Two year,No,Mailed check,29.89,2152.08,No
+0010-SYNTH,Male,0,Yes,No,3,Yes,No,Fiber optic,No,No,Yes,No,Yes,No,Month-to-month,Yes,Electronic check,25.49,76.47,No
+0011-SYNTH,Female,0,Yes,No,64,No,No phone service,Fiber optic,No,Yes,No,Yes,No,No,Month-to-month,No,Bank transfer (automatic),102.87,6583.68,Yes
+0012-SYNTH,Male,1,Yes,No,49,Yes,No,DSL,Yes,Yes,Yes,Yes,Yes,No,Two year,Yes,Mailed check,23.83,1167.67,No
+0013-SYNTH,Female,0,No,Yes,20,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Bank transfer (automatic),46.45,929.0,Yes
+0014-SYNTH,Female,0,No,Yes,56,Yes,Yes,Fiber optic,Yes,Yes,Yes,No,No,No,Month-to-month,No,Mailed check,51.83,2902.48,No
+0015-SYNTH,Female,1,Yes,Yes,61,Yes,Yes,Fiber optic,No,Yes,Yes,Yes,Yes,Yes,Month-to-month,No,Mailed check,35.64,2174.04,No
+0016-SYNTH,Female,1,Yes,Yes,3,Yes,No,DSL,No,No,No,Yes,No,Yes,One year,Yes,Mailed check,49.8,149.4,Yes
+0017-SYNTH,Male,0,No,No,7,Yes,Yes,DSL,Yes,No,Yes,Yes,No,Yes,One year,Yes,Electronic check,92.89,650.23,No
+0018-SYNTH,Female,0,No,Yes,48,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,No,Bank transfer (automatic),19.73,947.04,No
+0019-SYNTH,Male,0,Yes,Yes,72,Yes,Yes,Fiber optic,No,No,No,Yes,Yes,Yes,Two year,Yes,Electronic check,101.38,7299.36,No
+0020-SYNTH,Female,0,Yes,No,1,Yes,Yes,DSL,No,No,Yes,No,No,No,Month-to-month,Yes,Bank transfer (automatic),104.33,104.33,Yes
+0021-SYNTH,Female,0,No,Yes,48,Yes,No,Fiber optic,Yes,No,Yes,Yes,No,Yes,Month-to-month,No,Credit card (automatic),55.66,2671.68,Yes
+0022-SYNTH,Female,0,No,Yes,9,No,No phone service,Fiber optic,Yes,Yes,Yes,No,No,Yes,Month-to-month,No,Credit card (automatic),33.69,303.21,No
+0023-SYNTH,Female,0,No,Yes,47,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Mailed check,78.63,3695.61,Yes
+0024-SYNTH,Male,0,Yes,Yes,45,Yes,Yes,DSL,No,No,Yes,No,No,No,Month-to-month,No,Mailed check,30.28,1362.6,Yes
+0025-SYNTH,Female,0,Yes,No,6,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Credit card (automatic),54.92,329.52,No
+0026-SYNTH,Female,0,No,No,49,Yes,Yes,DSL,No,Yes,Yes,No,Yes,No,Month-to-month,Yes,Mailed check,114.57,5613.93,Yes
+0027-SYNTH,Female,0,No,No,65,Yes,Yes,Fiber optic,Yes,No,No,Yes,No,Yes,One year,No,Mailed check,118.29,7688.85,Yes
+0028-SYNTH,Male,1,No,Yes,63,Yes,No,Fiber optic,No,No,Yes,No,No,No,Month-to-month,Yes,Credit card (automatic),95.85,6038.55,No
+0029-SYNTH,Female,0,Yes,No,2,Yes,Yes,DSL,Yes,Yes,No,No,Yes,No,Month-to-month,Yes,Credit card (automatic),49.5,99.0,No
+0030-SYNTH,Male,0,No,No,17,Yes,Yes,DSL,No,No,No,No,Yes,Yes,One year,Yes,Credit card (automatic),87.36,1485.12,No
+0031-SYNTH,Male,0,Yes,Yes,17,No,No phone service,Fiber optic,No,No,Yes,Yes,No,No,One year,No,Electronic check,89.14,1515.38,No
+0032-SYNTH,Male,0,Yes,No,33,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,No,Credit card (automatic),57.23,1888.59,No
+0033-SYNTH,Female,0,No,Yes,10,Yes,Yes,Fiber optic,No,No,Yes,Yes,Yes,No,Two year,Yes,Electronic check,82.66,826.6,Yes
+0034-SYNTH,Male,0,No,No,62,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,Yes,Bank transfer (automatic),19.33,1198.46,No
+0035-SYNTH,Male,0,No,No,56,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Credit card (automatic),39.26,2198.56,No
+0036-SYNTH,Male,0,No,Yes,59,Yes,No,Fiber optic,Yes,No,No,Yes,Yes,No,Month-to-month,No,Bank transfer (automatic),71.02,4190.18,No
+0037-SYNTH,Female,1,Yes,Yes,14,Yes,No,Fiber optic,No,No,Yes,No,No,Yes,One year,Yes,Credit card (automatic),34.71,485.94,No
+0038-SYNTH,Male,0,No,Yes,1,Yes,No,DSL,Yes,Yes,Yes,No,No,Yes,Month-to-month,No,Mailed check,34.92,34.92,No
+0039-SYNTH,Female,0,Yes,No,66,Yes,Yes,DSL,No,No,Yes,Yes,No,No,Month-to-month,Yes,Mailed check,102.3,6751.8,Yes
+0040-SYNTH,Female,0,Yes,Yes,21,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Mailed check,117.66,2470.86,Yes
+0041-SYNTH,Female,0,No,No,47,Yes,Yes,Fiber optic,Yes,No,Yes,Yes,Yes,No,Month-to-month,Yes,Mailed check,74.12,3483.64,Yes
+0042-SYNTH,Female,0,No,Yes,66,Yes,Yes,DSL,Yes,No,Yes,No,Yes,No,Month-to-month,No,Bank transfer (automatic),102.58,6770.28,No
+0043-SYNTH,Male,0,No,Yes,2,Yes,Yes,Fiber optic,Yes,Yes,No,No,Yes,Yes,Month-to-month,Yes,Mailed check,117.78,235.56,No
+0044-SYNTH,Male,0,Yes,No,0,Yes,No,Fiber optic,Yes,Yes,Yes,No,No,No,Two year,Yes,Bank transfer (automatic),32.48, ,No
+0045-SYNTH,Male,1,No,No,0,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,Yes,Mailed check,63.3, ,Yes
+0046-SYNTH,Female,0,Yes,No,11,Yes,No,Fiber optic,No,No,No,No,Yes,No,Month-to-month,Yes,Mailed check,57.7,634.7,No
+0047-SYNTH,Female,0,No,Yes,3,Yes,No,Fiber optic,No,Yes,No,Yes,No,No,Two year,Yes,Electronic check,26.29,78.87,No
+0048-SYNTH,Female,0,No,Yes,59,Yes,No,Fiber optic,No,Yes,Yes,Yes,No,No,Month-to-month,No,Bank transfer (automatic),94.16,5555.44,Yes
+0049-SYNTH,Male,1,No,Yes,44,Yes,Yes,Fiber optic,Yes,Yes,No,Yes,Yes,No,Two year,Yes,Credit card (automatic),61.84,2720.96,Yes
+0050-SYNTH,Male,0,Yes,No,71,Yes,No,Fiber optic,No,Yes,No,Yes,Yes,Yes,Two year,Yes,Credit card (automatic),65.42,4644.82,Yes
+0051-SYNTH,Male,0,Yes,No,58,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Mailed check,33.39,1936.62,No
+0052-SYNTH,Male,1,Yes,Yes,70,Yes,Yes,Fiber optic,No,Yes,No,Yes,Yes,Yes,Two year,No,Mailed check,36.43,2550.1,Yes
+0053-SYNTH,Male,1,No,No,17,Yes,Yes,DSL,Yes,Yes,Yes,Yes,Yes,No,Two year,Yes,Bank transfer (automatic),109.41,1859.97,No
+0054-SYNTH,Female,0,No,Yes,21,Yes,No,DSL,No,No,No,Yes,No,No,Two year,Yes,Bank transfer (automatic),22.74,477.54,No
+0055-SYNTH,Male,0,Yes,No,62,Yes,Yes,Fiber optic,No,Yes,Yes,Yes,No,Yes,Two year,Yes,Electronic check,41.65,2582.3,No
+0056-SYNTH,Female,0,No,No,17,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,Yes,Bank transfer (automatic),47.6,809.2,No
+0057-SYNTH,Male,1,No,No,4,Yes,No,DSL,Yes,No,Yes,Yes,Yes,No,Month-to-month,Yes,Electronic check,67.51,270.04,No
+0058-SYNTH,Male,0,Yes,Yes,48,Yes,Yes,DSL,No,No,Yes,No,No,Yes,Two year,No,Electronic check,77.19,3705.12,No
+0059-SYNTH,Female,0,Yes,No,58,Yes,Yes,Fiber optic,Yes,Yes,Yes,Yes,Yes,Yes,One year,Yes,Bank transfer (automatic),67.83,3934.14,Yes
+0060-SYNTH,Female,0,No,Yes,70,Yes,Yes,DSL,Yes,Yes,Yes,Yes,Yes,No,One year,Yes,Electronic check,26.7,1869.0,No
+0061-SYNTH,Male,0,No,No,67,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Mailed check,42.74,2863.58,Yes
+0062-SYNTH,Male,0,Yes,Yes,8,Yes,Yes,DSL,Yes,No,Yes,No,No,No,One year,Yes,Bank transfer (automatic),103.03,824.24,No
+0063-SYNTH,Male,0,No,No,56,Yes,No,DSL,Yes,No,Yes,No,Yes,No,Month-to-month,No,Bank transfer (automatic),82.33,4610.48,No
+0064-SYNTH,Female,0,No,Yes,61,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,No,Mailed check,83.49,5092.89,No
+0065-SYNTH,Male,1,No,Yes,50,Yes,Yes,DSL,No,Yes,No,No,No,Yes,Month-to-month,No,Electronic check,85.61,4280.5,No
+0066-SYNTH,Female,1,No,No,59,Yes,Yes,DSL,Yes,Yes,No,No,No,No,One year,Yes,Credit card (automatic),94.92,5600.28,Yes
+0067-SYNTH,Male,0,No,No,61,Yes,No,DSL,No,Yes,No,No,Yes,Yes,Two year,No,Credit card (automatic),24.09,1469.49,No
+0068-SYNTH,Female,0,Yes,Yes,32,Yes,Yes,DSL,Yes,No,Yes,Yes,No,Yes,Month-to-month,Yes,Credit card (automatic),55.09,1762.88,No
+0069-SYNTH,Male,0,Yes,No,2,Yes,Yes,DSL,No,Yes,Yes,No,No,Yes,Month-to-month,No,Bank transfer (automatic),72.47,144.94,No
+0070-SYNTH,Female,0,Yes,Yes,33,Yes,No,DSL,No,Yes,Yes,Yes,Yes,Yes,Month-to-month,No,Mailed check,52.26,1724.58,No
+0071-SYNTH,Female,0,No,Yes,14,Yes,Yes,DSL,No,No,Yes,Yes,No,Yes,Two year,No,Credit card (automatic),103.12,1443.68,No
+0072-SYNTH,Male,1,Yes,Yes,8,Yes,Yes,DSL,No,No,Yes,No,No,No,One year,No,Mailed check,66.75,534.0,No
+0073-SYNTH,Male,0,Yes,Yes,9,Yes,Yes,Fiber optic,Yes,Yes,No,Yes,No,Yes,Month-to-month,Yes,Electronic check,95.5,859.5,Yes
+0074-SYNTH,Female,0,No,Yes,50,Yes,Yes,Fiber optic,No,Yes,No,Yes,Yes,No,Month-to-month,Yes,Credit card (automatic),103.88,5194.0,No
+0075-SYNTH,Male,1,Yes,Yes,36,Yes,Yes,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,No,Mailed check,68.98,2483.28,Yes
+0076-SYNTH,Male,0,Yes,Yes,39,Yes,No,DSL,No,No,Yes,Yes,No,Yes,Month-to-month,Yes,Credit card (automatic),109.66,4276.74,No
+0077-SYNTH,Male,0,Yes,Yes,54,Yes,Yes,Fiber optic,No,No,No,Yes,No,No,Two year,No,Mailed check,77.26,4172.04,No
+0078-SYNTH,Male,0,Yes,Yes,40,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,No,Credit card (automatic),103.7,4148.0,Yes
+0079-SYNTH,Male,0,Yes,No,45,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Bank transfer (automatic),52.48,2361.6,No
+0080-SYNTH,Male,0,No,No,6,Yes,No,DSL,Yes,Yes,Yes,Yes,No,No,Two year,Yes,Mailed check,68.38,410.28,No
+0081-SYNTH,Male,0,Yes,Yes,62,Yes,No,DSL,Yes,Yes,No,No,Yes,Yes,Month-to-month,No,Mailed check,71.66,4442.92,Yes
+0082-SYNTH,Male,1,Yes,Yes,32,Yes,Yes,DSL,Yes,No,Yes,No,No,Yes,Two year,Yes,Credit card (automatic),28.8,921.6,Yes
+0083-SYNTH,Male,0,No,No,11,Yes,Yes,DSL,No,Yes,Yes,Yes,Yes,No,Month-to-month,Yes,Electronic check,58.3,641.3,Yes
+0084-SYNTH,Male,0,Yes,No,59,Yes,Yes,Fiber optic,No,Yes,Yes,Yes,Yes,No,One year,Yes,Mailed check,110.44,6515.96,Yes
+0085-SYNTH,Female,0,No,No,53,Yes,Yes,Fiber optic,Yes,Yes,Yes,Yes,Yes,Yes,Two year,No,Mailed check,81.65,4327.45,No
+0086-SYNTH,Male,0,No,No,3,Yes,Yes,DSL,Yes,No,Yes,Yes,Yes,Yes,Month-to-month,No,Bank transfer (automatic),36.09,108.27,No
+0087-SYNTH,Male,0,No,No,14,Yes,Yes,Fiber optic,No,Yes,Yes,Yes,No,No,One year,No,Mailed check,52.3,732.2,Yes
+0088-SYNTH,Male,0,Yes,No,1,Yes,No,Fiber optic,No,Yes,Yes,Yes,Yes,No,Two year,No,Bank transfer (automatic),37.51,37.51,No
+0089-SYNTH,Female,0,Yes,Yes,19,Yes,Yes,DSL,No,Yes,Yes,Yes,No,Yes,Month-to-month,Yes,Mailed check,20.74,394.06,Yes
+0090-SYNTH,Male,0,No,Yes,7,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Electronic check,111.46,780.22,No
+0091-SYNTH,Male,1,Yes,Yes,51,Yes,Yes,DSL,No,No,Yes,Yes,No,No,One year,No,Electronic check,63.29,3227.79,No
+0092-SYNTH,Male,0,No,Yes,38,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Bank transfer (automatic),49.16,1868.08,No
+0093-SYNTH,Male,0,Yes,No,71,Yes,No,DSL,Yes,No,Yes,Yes,No,Yes,Month-to-month,Yes,Mailed check,78.4,5566.4,Yes
+0094-SYNTH,Male,0,Yes,No,54,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Mailed check,18.99,1025.46,No
+0095-SYNTH,Male,1,No,No,44,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,No,Bank transfer (automatic),46.19,2032.36,No
+0096-SYNTH,Female,0,No,Yes,37,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Mailed check,88.9,3289.3,Yes
+0097-SYNTH,Female,0,No,Yes,3,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Mailed check,81.94,245.82,Yes
+0098-SYNTH,Male,0,No,Yes,5,Yes,Yes,Fiber optic,Yes,No,Yes,No,Yes,Yes,Two year,Yes,Electronic check,116.92,584.6,Yes
+0099-SYNTH,Female,0,Yes,No,44,No,No phone service,Fiber optic,Yes,Yes,Yes,No,Yes,No,Month-to-month,Yes,Mailed check,80.6,3546.4,No
+0100-SYNTH,Female,0,No,Yes,0,No,No phone service,Fiber optic,No,No,Yes,No,Yes,Yes,Two year,Yes,Bank transfer (automatic),66.24, ,No
+0101-SYNTH,Male,0,No,Yes,3,Yes,Yes,DSL,No,No,Yes,Yes,No,Yes,Month-to-month,No,Bank transfer (automatic),94.77,284.31,No
+0102-SYNTH,Male,0,Yes,No,15,Yes,No,Fiber optic,Yes,No,Yes,No,Yes,Yes,Two year,Yes,Credit card (automatic),109.03,1635.45,No
+0103-SYNTH,Male,0,Yes,No,64,No,No phone service,Fiber optic,No,No,Yes,Yes,Yes,No,One year,Yes,Credit card (automatic),90.68,5803.52,No
+0104-SYNTH,Female,1,No,No,33,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Electronic check,115.05,3796.65,No
+0105-SYNTH,Male,0,Yes,Yes,51,Yes,Yes,Fiber optic,Yes,No,Yes,Yes,No,No,Two year,No,Mailed check,96.84,4938.84,Yes
+0106-SYNTH,Female,0,No,Yes,30,Yes,Yes,Fiber optic,No,No,No,Yes,No,Yes,Month-to-month,No,Mailed check,105.36,3160.8,No
+0107-SYNTH,Male,0,Yes,Yes,12,Yes,No,Fiber optic,Yes,No,Yes,Yes,No,No,Month-to-month,No,Bank transfer (automatic),29.72,356.64,No
+0108-SYNTH,Female,0,Yes,Yes,27,Yes,Yes,DSL,No,Yes,No,Yes,Yes,Yes,Month-to-month,No,Mailed check,91.86,2480.22,No
+0109-SYNTH,Female,0,Yes,No,6,No,No phone service,DSL,No,Yes,Yes,No,Yes,No,One year,No,Credit card (automatic),62.48,374.88,No
+0110-SYNTH,Male,0,Yes,Yes,56,Yes,Yes,Fiber optic,Yes,Yes,No,No,No,Yes,Month-to-month,No,Mailed check,73.84,4135.04,No
+0111-SYNTH,Male,1,No,Yes,13,Yes,No,Fiber optic,Yes,Yes,No,Yes,No,No,Month-to-month,No,Bank transfer (automatic),83.99,1091.87,No
+0112-SYNTH,Female,1,No,No,27,Yes,No,DSL,No,Yes,Yes,No,Yes,No,Month-to-month,Yes,Electronic check,115.72,3124.44,No
+0113-SYNTH,Male,1,No,Yes,71,Yes,No,Fiber optic,No,Yes,No,Yes,Yes,Yes,Month-to-month,Yes,Credit card (automatic),117.2,8321.2,No
+0114-SYNTH,Male,1,No,Yes,43,Yes,Yes,Fiber optic,No,Yes,Yes,Yes,Yes,No,Month-to-month,No,Credit card (automatic),47.22,2030.46,No
+0115-SYNTH,Female,1,Yes,Yes,33,Yes,No,DSL,Yes,Yes,Yes,No,No,Yes,Month-to-month,Yes,Credit card (automatic),91.99,3035.67,Yes
+0116-SYNTH,Male,0,No,Yes,39,Yes,No,Fiber optic,Yes,No,No,No,Yes,Yes,Month-to-month,No,Mailed check,93.62,3651.18,Yes
+0117-SYNTH,Male,0,No,Yes,57,Yes,No,Fiber optic,No,No,No,Yes,No,Yes,Month-to-month,Yes,Electronic check,53.07,3024.99,No
+0118-SYNTH,Male,0,No,No,18,Yes,Yes,DSL,No,No,Yes,Yes,No,No,One year,No,Bank transfer (automatic),30.7,552.6,Yes
+0119-SYNTH,Male,0,No,No,46,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Mailed check,22.37,1029.02,No
+0120-SYNTH,Female,0,No,Yes,63,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,No,Credit card (automatic),96.37,6071.31,Yes
+0121-SYNTH,Female,1,No,Yes,41,Yes,Yes,Fiber optic,No,No,No,Yes,Yes,No,Month-to-month,Yes,Bank transfer (automatic),67.46,2765.86,Yes
+0122-SYNTH,Male,0,No,Yes,32,Yes,Yes,DSL,Yes,Yes,Yes,No,No,No,Month-to-month,Yes,Bank transfer (automatic),117.3,3753.6,No
+0123-SYNTH,Male,0,No,No,10,Yes,Yes,Fiber optic,Yes,No,No,No,Yes,No,Month-to-month,Yes,Credit card (automatic),64.98,649.8,Yes
+0124-SYNTH,Female,0,No,No,18,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Credit card (automatic),116.53,2097.54,No
+0125-SYNTH,Male,0,Yes,No,69,Yes,Yes,Fiber optic,No,Yes,No,No,Yes,No,Month-to-month,Yes,Mailed check,59.61,4113.09,No
+0126-SYNTH,Male,0,Yes,Yes,39,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,No,Electronic check,98.02,3822.78,Yes
+0127-SYNTH,Male,1,No,Yes,21,Yes,No,Fiber optic,Yes,Yes,No,Yes,Yes,No,Month-to-month,Yes,Electronic check,26.77,562.17,No
+0128-SYNTH,Male,0,Yes,Yes,30,Yes,Yes,Fiber optic,No,Yes,No,Yes,Yes,Yes,Month-to-month,Yes,Mailed check,74.07,2222.1,No
+0129-SYNTH,Female,0,Yes,Yes,42,Yes,No,DSL,Yes,No,No,No,Yes,No,One year,No,Bank transfer (automatic),98.86,4152.12,No
+0130-SYNTH,Male,0,No,Yes,39,Yes,No,Fiber optic,No,Yes,Yes,No,Yes,No,Month-to-month,Yes,Electronic check,111.18,4336.02,No
+0131-SYNTH,Male,0,No,No,51,No,No phone service,DSL,No,No,Yes,No,Yes,No,Month-to-month,Yes,Electronic check,100.92,5146.92,No
+0132-SYNTH,Female,0,No,Yes,18,Yes,No,Fiber optic,No,Yes,No,Yes,Yes,Yes,Month-to-month,No,Bank transfer (automatic),21.97,395.46,No
+0133-SYNTH,Male,0,Yes,No,47,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Credit card (automatic),55.71,2618.37,No
+0134-SYNTH,Female,0,Yes,No,32,Yes,No,DSL,Yes,No,No,Yes,Yes,Yes,Month-to-month,No,Electronic check,23.14,740.48,No
+0135-SYNTH,Male,0,No,No,68,Yes,No,Fiber optic,Yes,Yes,Yes,Yes,Yes,Yes,Two year,Yes,Bank transfer (automatic),29.23,1987.64,No
+0136-SYNTH,Male,1,No,Yes,11,No,No phone service,DSL,No,No,No,No,Yes,Yes,Two year,No,Electronic check,86.12,947.32,No
+0137-SYNTH,Male,0,Yes,No,10,Yes,Yes,Fiber optic,Yes,No,Yes,Yes,Yes,No,Month-to-month,Yes,Bank transfer (automatic),89.93,899.3,No
+0138-SYNTH,Female,1,No,Yes,33,Yes,No,DSL,Yes,No,Yes,No,No,No,One year,No,Credit card (automatic),96.01,3168.33,No
+0139-SYNTH,Female,0,Yes,Yes,37,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,No,Credit card (automatic),105.23,3893.51,No
+0140-SYNTH,Male,0,No,Yes,50,Yes,Yes,DSL,Yes,No,Yes,No,No,Yes,Month-to-month,Yes,Bank transfer (automatic),92.56,4628.0,No
+0141-SYNTH,Male,1,No,Yes,29,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,Yes,Bank transfer (automatic),98.74,2863.46,Yes
+0142-SYNTH,Male,0,No,No,66,No,No phone service,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,Yes,Credit card (automatic),23.17,1529.22,Yes
+0143-SYNTH,Female,0,No,No,34,Yes,Yes,Fiber optic,No,Yes,No,No,No,Yes,Two year,Yes,Bank transfer (automatic),41.82,1421.88,No
+0144-SYNTH,Male,0,Yes,No,9,Yes,No,Fiber optic,Yes,No,No,No,Yes,Yes,Two year,Yes,Mailed check,80.75,726.75,No
+0145-SYNTH,Female,0,Yes,Yes,8,Yes,Yes,Fiber optic,Yes,Yes,No,No,No,No,Month-to-month,No,Credit card (automatic),104.49,835.92,No
+0146-SYNTH,Female,0,Yes,Yes,71,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Bank transfer (automatic),18.7,1327.7,Yes
+0147-SYNTH,Female,1,No,No,9,Yes,No,DSL,No,Yes,No,Yes,No,No,Month-to-month,Yes,Credit card (automatic),69.97,629.73,No
+0148-SYNTH,Male,1,No,Yes,69,Yes,Yes,Fiber optic,Yes,No,No,Yes,Yes,No,Month-to-month,No,Bank transfer (automatic),86.32,5956.08,No
+0149-SYNTH,Male,0,No,No,20,Yes,Yes,DSL,No,No,Yes,No,No,No,Month-to-month,Yes,Credit card (automatic),21.23,424.6,No
+0150-SYNTH,Male,0,Yes,No,6,Yes,No,Fiber optic,Yes,Yes,No,Yes,Yes,No,Two year,No,Electronic check,58.59,351.54,No
+0151-SYNTH,Female,0,Yes,No,22,Yes,Yes,DSL,Yes,No,Yes,No,No,No,Month-to-month,No,Electronic check,108.26,2381.72,No
+0152-SYNTH,Female,0,No,No,44,Yes,Yes,Fiber optic,No,No,Yes,Yes,No,No,Month-to-month,No,Electronic check,85.75,3773.0,No
+0153-SYNTH,Female,0,No,Yes,31,Yes,Yes,Fiber optic,No,Yes,No,No,No,Yes,Two year,Yes,Bank transfer (automatic),42.13,1306.03,No
+0154-SYNTH,Male,1,No,Yes,57,Yes,No,Fiber optic,No,Yes,Yes,No,Yes,Yes,Month-to-month,Yes,Bank transfer (automatic),103.95,5925.15,No
+0155-SYNTH,Male,1,Yes,Yes,44,Yes,Yes,Fiber optic,No,No,No,Yes,Yes,Yes,Month-to-month,No,Electronic check,53.23,2342.12,No
+0156-SYNTH,Female,0,Yes,Yes,29,Yes,No,Fiber optic,No,Yes,No,Yes,No,No,Two year,No,Electronic check,104.01,3016.29,No
+0157-SYNTH,Female,0,No,Yes,46,Yes,No,Fiber optic,No,Yes,No,No,Yes,No,Month-to-month,Yes,Credit card (automatic),48.29,2221.34,Yes
+0158-SYNTH,Female,0,No,No,70,Yes,Yes,Fiber optic,Yes,No,No,Yes,Yes,Yes,Month-to-month,No,Credit card (automatic),77.58,5430.6,No
+0159-SYNTH,Female,0,Yes,Yes,30,Yes,No,Fiber optic,Yes,Yes,No,No,Yes,No,Month-to-month,No,Bank transfer (automatic),58.14,1744.2,No
+0160-SYNTH,Male,0,No,No,11,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,Yes,Mailed check,45.87,504.57,No
+0161-SYNTH,Male,0,Yes,No,29,No,No phone service,DSL,Yes,Yes,No,No,Yes,No,Month-to-month,No,Mailed check,107.35,3113.15,No
+0162-SYNTH,Male,0,Yes,No,61,Yes,No,DSL,Yes,No,Yes,Yes,Yes,No,Month-to-month,Yes,Electronic check,37.1,2263.1,Yes
+0163-SYNTH,Female,0,No,Yes,15,Yes,Yes,DSL,Yes,Yes,Yes,No,No,No,Month-to-month,No,Electronic check,26.77,401.55,No
+0164-SYNTH,Female,1,No,No,69,Yes,Yes,Fiber optic,Yes,No,Yes,Yes,No,Yes,Month-to-month,No,Credit card (automatic),52.61,3630.09,Yes
+0165-SYNTH,Male,0,No,Yes,42,Yes,Yes,Fiber optic,No,No,Yes,No,Yes,Yes,Two year,No,Mailed check,90.37,3795.54,No
+0166-SYNTH,Female,1,Yes,Yes,43,Yes,No,Fiber optic,Yes,Yes,No,No,Yes,No,Month-to-month,Yes,Bank transfer (automatic),99.4,4274.2,No
+0167-SYNTH,Female,0,No,Yes,23,Yes,No,Fiber optic,No,Yes,Yes,Yes,Yes,No,Two year,Yes,Bank transfer (automatic),118.62,2728.26,No
+0168-SYNTH,Female,0,No,Yes,67,Yes,Yes,DSL,Yes,No,No,Yes,No,No,Month-to-month,No,Mailed check,48.03,3218.01,No
+0169-SYNTH,Female,0,No,Yes,2,No,No phone service,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Electronic check,59.25,118.5,No
+0170-SYNTH,Male,0,Yes,Yes,21,Yes,No,Fiber optic,No,No,No,No,No,Yes,Two year,No,Bank transfer (automatic),32.0,672.0,No
+0171-SYNTH,Male,0,No,No,30,Yes,No,DSL,Yes,Yes,No,Yes,No,Yes,Month-to-month,Yes,Electronic check,76.02,2280.6,No
+0172-SYNTH,Female,0,No,Yes,34,Yes,No,Fiber optic,Yes,No,Yes,Yes,No,No,Month-to-month,Yes,Mailed check,118.51,4029.34,No
+0173-SYNTH,Female,1,No,Yes,34,No,No phone service,DSL,No,No,Yes,No,Yes,Yes,Two year,No,Credit card (automatic),88.69,3015.46,No
+0174-SYNTH,Male,0,Yes,No,10,Yes,No,DSL,No,Yes,No,No,No,Yes,Month-to-month,Yes,Bank transfer (automatic),78.07,780.7,No
+0175-SYNTH,Male,0,No,No,16,Yes,Yes,DSL,Yes,Yes,No,No,No,Yes,Month-to-month,No,Credit card (automatic),57.68,922.88,Yes
+0176-SYNTH,Female,0,Yes,No,6,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,Yes,Electronic check,110.24,661.44,Yes
+0177-SYNTH,Female,0,Yes,Yes,41,No,No phone service,Fiber optic,No,No,Yes,No,No,No,Month-to-month,Yes,Electronic check,68.19,2795.79,Yes
+0178-SYNTH,Male,0,No,No,25,Yes,No,Fiber optic,Yes,Yes,Yes,No,No,No,Month-to-month,Yes,Mailed check,31.75,793.75,No
+0179-SYNTH,Female,0,Yes,No,41,Yes,No,Fiber optic,Yes,Yes,Yes,Yes,Yes,Yes,Month-to-month,No,Mailed check,54.97,2253.77,No
+0180-SYNTH,Male,1,No,Yes,43,Yes,Yes,Fiber optic,Yes,No,Yes,No,No,Yes,Month-to-month,No,Electronic check,25.0,1075.0,No
+0181-SYNTH,Male,0,Yes,Yes,51,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Credit card (automatic),38.55,1966.05,Yes
+0182-SYNTH,Female,0,No,No,39,Yes,Yes,Fiber optic,No,No,No,No,Yes,Yes,One year,Yes,Electronic check,20.03,781.17,Yes
+0183-SYNTH,Male,0,No,Yes,47,Yes,No,Fiber optic,No,No,Yes,No,Yes,No,Month-to-month,No,Bank transfer (automatic),63.8,2998.6,No
+0184-SYNTH,Female,0,No,Yes,42,Yes,Yes,Fiber optic,No,No,No,No,No,No,One year,Yes,Bank transfer (automatic),82.02,3444.84,No
+0185-SYNTH,Male,1,Yes,No,47,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Bank transfer (automatic),52.75,2479.25,No
+0186-SYNTH,Female,0,Yes,No,45,Yes,Yes,Fiber optic,Yes,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,60.5,2722.5,No
+0187-SYNTH,Male,0,Yes,No,23,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Mailed check,114.65,2636.95,No
+0188-SYNTH,Female,0,Yes,No,17,Yes,No,DSL,Yes,No,Yes,Yes,No,No,One year,Yes,Bank transfer (automatic),93.82,1594.94,Yes
+0189-SYNTH,Male,0,No,No,57,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Mailed check,72.61,4138.77,No
+0190-SYNTH,Female,0,Yes,Yes,25,No,No phone service,Fiber optic,No,Yes,Yes,Yes,Yes,Yes,Month-to-month,Yes,Bank transfer (automatic),46.85,1171.25,No
+0191-SYNTH,Male,0,Yes,Yes,40,Yes,Yes,DSL,Yes,No,No,No,Yes,Yes,Two year,No,Electronic check,108.4,4336.0,No
+0192-SYNTH,Male,0,Yes,No,14,Yes,No,Fiber optic,No,Yes,No,No,No,Yes,One year,Yes,Electronic check,41.88,586.32,Yes
+0193-SYNTH,Male,0,Yes,Yes,31,Yes,Yes,Fiber optic,No,No,Yes,Yes,No,No,Month-to-month,Yes,Bank transfer (automatic),50.95,1579.45,No
+0194-SYNTH,Female,1,No,Yes,38,Yes,Yes,DSL,Yes,No,No,Yes,Yes,No,Two year,No,Bank transfer (automatic),109.61,4165.18,No
+0195-SYNTH,Male,0,No,No,45,Yes,Yes,Fiber optic,No,No,Yes,No,Yes,Yes,Month-to-month,No,Electronic check,71.47,3216.15,No
+0196-SYNTH,Female,0,Yes,No,38,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,Yes,Credit card (automatic),92.85,3528.3,No
+0197-SYNTH,Female,0,No,Yes,26,Yes,No,DSL,No,Yes,No,No,No,Yes,Month-to-month,Yes,Electronic check,77.62,2018.12,Yes
+0198-SYNTH,Female,1,No,Yes,70,Yes,No,Fiber optic,No,Yes,No,Yes,Yes,Yes,Month-to-month,Yes,Credit card (automatic),83.92,5874.4,No
+0199-SYNTH,Female,0,Yes,No,37,Yes,Yes,Fiber optic,Yes,No,Yes,No,No,Yes,Month-to-month,No,Bank transfer (automatic),48.34,1788.58,No
