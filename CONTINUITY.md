@@ -14,10 +14,10 @@
 | Project | Customer Churn Prediction Using Machine Learning |
 | Dataset | IBM Telco Customer Churn (Kaggle) |
 | Goal | Predict which customers will churn, explain why, serve predictions via a web app |
-| Current phase | Phase 6 — Explainability & business insights (next) |
-| Overall progress | 23 / 35 tasks (66%) |
+| Current phase | Phase 7 — Deployment (next) |
+| Overall progress | 26 / 35 tasks (74%) |
 | Last updated | 2026-11-05 |
-| Next immediate action | `pip install shap`, then build `notebooks/04_explainability.ipynb`: SHAP summary plot for the saved Random Forest |
+| Next immediate action | Build `src/predict.py`: load `models/churn_model.pkl`, score one customer, return probability + risk level + top SHAP reasons |
 | Blockers | XGBoost/LightGBM not run yet (not installed in build env) — run `pip install xgboost lightgbm` then `python -m src.train` locally; it adds them automatically. Push to GitHub is a manual step (create empty repo, then `git remote add origin <url>` + `git push -u origin main`) |
 
 **How % is calculated:** ticked tasks in Section 2 ÷ 35 total tasks × 100.
@@ -32,11 +32,11 @@
 | 3 | Cleaning & preprocessing | 5 | 5 | Done |
 | 4 | Feature engineering & imbalance | 2 | 2 | Done |
 | 5 | Model building & evaluation | 6 | 6 | Done (XGBoost/LightGBM to run locally) |
-| 6 | Explainability & insights | 3 | 0 | Not started |
+| 6 | Explainability & insights | 3 | 3 | Done |
 | 7 | Deployment | 4 | 0 | Not started |
 | 8 | Documentation & presentation | 3 | 0 | Not started |
 | — | Final wrap-up | 2 | 0 | Not started |
-| **Total** | | **35** | **23** | |
+| **Total** | | **35** | **26** | |
 
 Status values: `Not started` · `In progress` · `Done`
 
@@ -102,11 +102,13 @@ Tick `[x]` only when the phase's **Done when** check is met.
 > 5.2 note: Decision Tree, Random Forest and scikit-learn HistGradientBoosting were trained here. XGBoost + LightGBM code is in `src/train.py` and runs automatically once installed — run it locally and update Section 5 if either beats Random Forest.
 
 ### Phase 6 — Explainability & business insights (`notebooks/04_explainability.ipynb`)
-- [ ] 6.1 SHAP summary plot (global churn drivers)
-- [ ] 6.2 SHAP waterfall plots for 2–3 individual customers
-- [ ] 6.3 Top 5 churn drivers, each with a retention action
+- [x] 6.1 SHAP summary plot (global churn drivers)
+- [x] 6.2 SHAP waterfall plots for 2–3 individual customers
+- [x] 6.3 Top 5 churn drivers, each with a retention action
 
 **Done when:** top 5 drivers + actions are written in the notebook and Section 5.
+> Status: Done. `python -m src.explain` (~30 s) → SHAP values for 200 test customers on the 19 original features, by-value directions, 3 customer waterfalls, permutation importance check. `notebooks/04_explainability.ipynb` has the top-5 drivers → actions table.
+> Backend note: `shap` is not installed in the build env, so values come from the built-in sampling-Shapley estimator (same algorithm as `shap.PermutationExplainer`; verified against exact values in `tests/test_explain.py`). `pip install shap` → re-run `python -m src.explain` to switch to the library automatically.
 
 ### Phase 7 — Deployment (`src/predict.py`, `app/streamlit_app.py`)
 - [ ] 7.1 `predict.py` loads model and scores one customer
@@ -146,6 +148,8 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | Jupyter notebook format | — | 2 | `01_eda.ipynb` |
 | SciPy | 1.x | 5 | Search distributions (`loguniform`, `randint`) |
 | joblib | 1.x | 5 | Save/load `models/churn_model.pkl`, `preprocessor.pkl` |
+| Shapley values (built-in sampler, `src/explain.py`) | — | 6 | SHAP global importance, by-value effects, customer waterfalls |
+| scikit-learn `permutation_importance` | 1.x | 6 | Independent check of the SHAP ranking |
 | scikit-learn | 1.x | 3–5 | `ColumnTransformer`, `OneHotEncoder`, `StandardScaler`, `train_test_split`; Phase 4: `StratifiedKFold`, LogisticRegression, RandomForest, `NearestNeighbors` (built-in SMOTE); Phase 5: `Pipeline`, `cross_validate`, `RandomizedSearchCV`, DecisionTree, HistGradientBoosting, metrics |
 
 ---
@@ -160,7 +164,7 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | XGBoost, LightGBM | 5 (re-run) | Extra boosting candidates — code ready in `src/train.py` | `pip install xgboost lightgbm` |
 | Optuna (optional) | 5 | Hyperparameter tuning | `pip install optuna` |
 | MLflow (optional) | 5 | Experiment tracking | `pip install mlflow` |
-| SHAP | 6 | Explainability | `pip install shap` |
+| SHAP library (optional upgrade) | 6–7 | Official backend + SHAP's own plots; `src/explain.py` uses it automatically | `pip install shap` |
 | Streamlit | 7 | Web app | `pip install streamlit` |
 | FastAPI + Uvicorn (optional) | 7 | REST API | `pip install fastapi uvicorn` |
 | Streamlit Community Cloud | 7 | Hosting | share.streamlit.io |
@@ -187,7 +191,9 @@ Record every decision that someone resuming the project must know.
 | 2026-11-05 | Best model | **Random Forest (tuned)**, `class_weight='balanced'`, 40 base features → `models/churn_model.pkl`. LR is a near-equal, more interpretable fallback |
 | 2026-11-05 | Best model scores (TEST set, 1,409) | ROC-AUC **0.845**, recall **0.80**, precision 0.52, F1 0.63, accuracy 0.75. Confusion: TN 755, FP 280, FN 75, TP 299. Matches CV → no overfitting |
 | 2026-11-05 | Decision threshold | **0.49** = highest threshold with out-of-fold recall ≥ 80% (train set). Business rule: catch 80% of churners; raise it for fewer false alarms |
-| | Top 5 churn drivers | |
+| 2026-11-05 | Top 5 churn drivers (mean \|SHAP\|, RF) | 1 Contract 0.11 (M2M +0.09, 2-yr −0.17) · 2 InternetService 0.06 (fiber +0.06) · 3 tenure 0.05 (0–12 mo +0.08) · 4 OnlineSecurity 0.04 (none +0.04) · 5 TechSupport 0.03 (none +0.03). Also electronic check +0.03. Gender, PhoneService ≈ 0. Permutation importance agrees (Contract, tenure, InternetService top 3) |
+| 2026-11-05 | Retention actions | 1 discount to move M2M → 1/2-yr contract · 2 fiber price/quality offers · 3 onboarding check-ins months 1–6 · 4–5 bundle OnlineSecurity/TechSupport free 3–6 mo · auto-pay credit for e-check payers. Validate with A/B tests (SHAP = correlation, not causation) |
+| 2026-11-05 | Probability scale | Base value 0.44 (not 0.265) because of class_weight='balanced' — ranking unaffected; threshold 0.49 is on this scale. Use `CalibratedClassifierCV` if calibrated probabilities are needed |
 
 ---
 
@@ -208,7 +214,11 @@ Record every decision that someone resuming the project must know.
 | `reports/figures/01–06_*.png` | Class balance, segment churn rates, contract×internet heatmap, distributions, correlation heatmap | Done |
 | `notebooks/02_preprocessing.ipynb` | Step-by-step walkthrough of the pipeline (executed) | Done |
 | `notebooks/03_modeling.ipynb` | Results, test evaluation, reload + predict check (executed) | Done |
-| `notebooks/04_explainability.ipynb` | SHAP analysis | Not created |
+| `notebooks/04_explainability.ipynb` | SHAP results, 3 customer explanations, drivers → actions (executed) | Done |
+| `src/explain.py` | Shapley values (shap or built-in), global + by-value + waterfalls + permutation importance | Done |
+| `tests/test_explain.py` | Shapley estimator matches exact values (linear model, categoricals) | Done |
+| `reports/shap_values.csv`, `reports/explainability.json` | Per-customer SHAP values + summary | Done |
+| `reports/figures/11–14_*.png` | SHAP global, by-value, 3 waterfalls, permutation importance | Done |
 | `src/data_prep.py` | `clean()`, `add_features()`, `split()`, `build_preprocessor(engineered=)`, `prepare(fit=, engineered=)`, `save_processed()` | Done |
 | `src/imbalance.py` | `get_smote()` (imblearn if installed, else built-in `SimpleSMOTE`) | Done |
 | `src/compare_imbalance.py` | Phase 4 CV experiment: base vs engineered features × none / class_weight / SMOTE × LR / RF | Done |
@@ -239,6 +249,7 @@ Newest first. One line per session.
 
 | Date | Phase | What was done | Next step / Blockers |
 | --- | --- | --- | --- |
+| 2026-11-05 | 6 | SHAP explanations (built-in backend), permutation check, 3 customer waterfalls, top-5 drivers + actions, notebook 04, 18 tests pass | Phase 7: predict.py + Streamlit app |
 | 2026-11-05 | 5 | 4 models compared, LR + RF tuned, threshold 0.49 for 80% recall, test ROC-AUC 0.845, model saved, notebook 03, 16 tests pass | Phase 6: SHAP (install shap); run XGBoost/LightGBM locally |
 | 2026-11-05 | 4 | Engineered features + SMOTE module + CV comparison. Features: no gain → off by default. Imbalance: class_weight='balanced' chosen. 12 tests pass | Phase 5: model comparison with class_weight |
 | 2026-11-05 | 3 | Preprocessing pipeline `src/data_prep.py`, notebook 02, processed data, 6 new tests (10 total pass) | Phase 4: engineered features + imbalance comparison |
