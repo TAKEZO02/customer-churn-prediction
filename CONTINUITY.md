@@ -14,10 +14,10 @@
 | Project | Customer Churn Prediction Using Machine Learning |
 | Dataset | IBM Telco Customer Churn (Kaggle) |
 | Goal | Predict which customers will churn, explain why, serve predictions via a web app |
-| Current phase | Phase 3 — Cleaning & preprocessing (next) |
-| Overall progress | 10 / 35 tasks (29%) |
+| Current phase | Phase 4 — Feature engineering & imbalance handling (next) |
+| Overall progress | 15 / 35 tasks (43%) |
 | Last updated | 2026-11-05 |
-| Next immediate action | Build `src/data_prep.py`: convert TotalCharges (blanks → 0), drop customerID, encode Churn |
+| Next immediate action | Add engineered features (tenure groups, number of services, charges per tenure month) to `src/data_prep.py` |
 | Blockers | Push to GitHub is a manual step (create empty repo, then `git remote add origin <url>` + `git push -u origin main`) |
 
 **How % is calculated:** ticked tasks in Section 2 ÷ 35 total tasks × 100.
@@ -29,14 +29,14 @@
 | 0 | Setup | 3 | 3 | Done (local; GitHub push by you) |
 | 1 | Data collection & understanding | 3 | 3 | Done |
 | 2 | Exploratory data analysis | 4 | 4 | Done |
-| 3 | Cleaning & preprocessing | 5 | 0 | Not started |
+| 3 | Cleaning & preprocessing | 5 | 5 | Done |
 | 4 | Feature engineering & imbalance | 2 | 0 | Not started |
 | 5 | Model building & evaluation | 6 | 0 | Not started |
 | 6 | Explainability & insights | 3 | 0 | Not started |
 | 7 | Deployment | 4 | 0 | Not started |
 | 8 | Documentation & presentation | 3 | 0 | Not started |
 | — | Final wrap-up | 2 | 0 | Not started |
-| **Total** | | **35** | **10** | |
+| **Total** | | **35** | **15** | |
 
 Status values: `Not started` · `In progress` · `Done`
 
@@ -72,13 +72,14 @@ Tick `[x]` only when the phase's **Done when** check is met.
 > Status: Done. `notebooks/01_eda.ipynb` (executed, outputs saved) + 6 figures in `reports/figures/` + 8 written insights.
 
 ### Phase 3 — Cleaning & preprocessing (`src/data_prep.py`)
-- [ ] 3.1 Convert TotalCharges to numeric; handle blank rows
-- [ ] 3.2 Drop customerID; encode Churn as 0/1
-- [ ] 3.3 One-hot encode categoricals; scale numeric columns
-- [ ] 3.4 Stratified 80/20 train/test split
-- [ ] 3.5 Wrap all steps in a scikit-learn Pipeline / ColumnTransformer
+- [x] 3.1 Convert TotalCharges to numeric; handle blank rows
+- [x] 3.2 Drop customerID; encode Churn as 0/1
+- [x] 3.3 One-hot encode categoricals; scale numeric columns
+- [x] 3.4 Stratified 80/20 train/test split
+- [x] 3.5 Wrap all steps in a scikit-learn Pipeline / ColumnTransformer
 
 **Done when:** one function turns raw CSV into model-ready train/test sets.
+> Status: Done. `from src.data_prep import prepare` → `X_train, X_test, y_train, y_test, preprocessor`. `prepare(fit=False)` gives the unfitted preprocessor for use inside a model Pipeline (Phase 5). `python -m src.data_prep` writes `data/processed/`.
 
 ### Phase 4 — Feature engineering & imbalance handling
 - [ ] 4.1 Add features: tenure groups, number of services, charges per tenure month
@@ -139,6 +140,7 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | Matplotlib | 3.x | 2 | EDA charts, saved PNGs |
 | Seaborn | 0.13 | 2 | KDE distributions, heatmaps |
 | Jupyter notebook format | — | 2 | `01_eda.ipynb` |
+| scikit-learn | 1.x | 3 | `ColumnTransformer`, `OneHotEncoder`, `StandardScaler`, `train_test_split` |
 
 ---
 
@@ -148,7 +150,7 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | --- | --- | --- | --- |
 | GitHub (remote) | 0 | Host the repo — push manually | github.com |
 | Jupyter Notebook / VS Code | 0 | Editor | `pip install notebook` |
-| scikit-learn | 3–5 | Preprocessing, models, metrics | `pip install scikit-learn` |
+| scikit-learn (models, metrics) | 5 | Models, CV, metrics (already installed in Phase 3) | — |
 | imbalanced-learn | 4 | SMOTE | `pip install imbalanced-learn` |
 | XGBoost, LightGBM | 5 | Boosting models | `pip install xgboost lightgbm` |
 | Optuna (optional) | 5 | Hyperparameter tuning | `pip install optuna` |
@@ -169,7 +171,9 @@ Record every decision that someone resuming the project must know.
 | --- | --- | --- |
 | 2026-11-05 | Dataset shape | 7,043 rows × 21 columns; no NaN, no duplicate rows or IDs |
 | 2026-11-05 | Churn % | 1,869 Yes / 5,174 No → 26.5% (imbalanced; use stratified split, recall/F1/ROC-AUC) |
-| 2026-11-05 | Missing-value handling | 11 blank `TotalCharges`, all tenure = 0 and none churned (new, unbilled customers) → plan: set to 0 in Phase 3 |
+| 2026-11-05 | Missing-value handling | 11 blank `TotalCharges`, all tenure = 0 and none churned (new, unbilled customers) → set to 0 in `clean()` (not mean-imputed) |
+| 2026-11-05 | Encoding & scaling | OneHotEncoder(drop='if_binary', handle_unknown='ignore') on 15 categoricals; StandardScaler on tenure, MonthlyCharges, TotalCharges; SeniorCitizen passthrough → 40 features |
+| 2026-11-05 | Train/test split | Stratified 80/20, random_state=42 → train 5,634 / test 1,409, churn 26.5% in both. Preprocessor fitted on train only |
 | 2026-11-05 | EDA: top churn signals | Month-to-month contract (42.7% churn, 89% of churners), tenure 0–12 mo (47.4%), fiber optic (41.9%), electronic check (45.3%), no OnlineSecurity/TechSupport (~42%). Month-to-month + fiber = 54.6% (2,128 customers). Gender ≈ no effect |
 | 2026-11-05 | EDA: correlations | Churn vs tenure r = −0.35, MonthlyCharges +0.19, TotalCharges −0.20. TotalCharges ≈ tenure × monthly (r = 0.83 with tenure) — redundant for linear models |
 | | Imbalance method | _class_weight or SMOTE, and why_ |
@@ -192,13 +196,14 @@ Record every decision that someone resuming the project must know.
 | `tests/test_data_check.py` | Tests for loader + data check | Done (4 pass) |
 | `tests/make_sample_fixture.py` + `tests/fixtures/sample_telco_SYNTHETIC.csv` | SYNTHETIC 200-row sample for tests only — never for results | Done |
 | `pytest.ini` | Lets tests import `src` | Done |
-| `data/processed/` | Cleaned, encoded data | Folder created |
+| `data/processed/` | `telco_clean.csv`, `train.csv`, `test.csv` (regenerate with `python -m src.data_prep`; git-ignored) | Done |
 | `notebooks/01_eda.ipynb` | EDA + 8 business insights (executed) | Done |
 | `reports/figures/01–06_*.png` | Class balance, segment churn rates, contract×internet heatmap, distributions, correlation heatmap | Done |
-| `notebooks/02_preprocessing.ipynb` | Cleaning experiments | Not created |
+| `notebooks/02_preprocessing.ipynb` | Step-by-step walkthrough of the pipeline (executed) | Done |
 | `notebooks/03_modeling.ipynb` | Model training & comparison | Not created |
 | `notebooks/04_explainability.ipynb` | SHAP analysis | Not created |
-| `src/data_prep.py` | Cleaning + feature pipeline | Not created |
+| `src/data_prep.py` | `clean()`, `split()`, `build_preprocessor()`, `prepare()`, `save_processed()` | Done (Phase 4 adds features) |
+| `tests/test_data_prep.py` | 6 tests: cleaning, no raw mutation, stratification, encoding, no leakage, real-data shapes | Done |
 | `src/train.py` | Trains & saves best model | Not created |
 | `src/predict.py` | Scores a single customer | Not created |
 | `models/` | churn_model.pkl, preprocessor.pkl | Folder created |
@@ -219,6 +224,7 @@ Newest first. One line per session.
 
 | Date | Phase | What was done | Next step / Blockers |
 | --- | --- | --- | --- |
+| 2026-11-05 | 3 | Preprocessing pipeline `src/data_prep.py`, notebook 02, processed data, 6 new tests (10 total pass) | Phase 4: engineered features + imbalance comparison |
 | 2026-11-05 | 2 | EDA notebook: segment churn rates, distributions, correlations, 6 figures, 8 insights | Phase 3: preprocessing pipeline in `src/data_prep.py` |
 | 2026-11-05 | 1 | Real CSV added; data check run (7,043 × 21, 26.5% churn, 11 blank TotalCharges); all 4 tests pass — Phase 1 done | Phase 2: EDA notebook |
 | 2026-11-05 | 1 | Data dictionary, loader, data-quality check, tests + synthetic fixture (3 tests pass) | Add real CSV → run `python -m src.data_check` → tick 1.1, 1.3 |
