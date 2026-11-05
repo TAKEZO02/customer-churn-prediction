@@ -14,10 +14,10 @@
 | Project | Customer Churn Prediction Using Machine Learning |
 | Dataset | IBM Telco Customer Churn (Kaggle) |
 | Goal | Predict which customers will churn, explain why, serve predictions via a web app |
-| Current phase | Phase 2 — Exploratory data analysis (next) |
-| Overall progress | 6 / 35 tasks (17%) |
+| Current phase | Phase 3 — Cleaning & preprocessing (next) |
+| Overall progress | 10 / 35 tasks (29%) |
 | Last updated | 2026-11-05 |
-| Next immediate action | Build `notebooks/01_eda.ipynb`: churn rate by Contract, tenure, InternetService, PaymentMethod |
+| Next immediate action | Build `src/data_prep.py`: convert TotalCharges (blanks → 0), drop customerID, encode Churn |
 | Blockers | Push to GitHub is a manual step (create empty repo, then `git remote add origin <url>` + `git push -u origin main`) |
 
 **How % is calculated:** ticked tasks in Section 2 ÷ 35 total tasks × 100.
@@ -28,7 +28,7 @@
 | --- | --- | --- | --- | --- |
 | 0 | Setup | 3 | 3 | Done (local; GitHub push by you) |
 | 1 | Data collection & understanding | 3 | 3 | Done |
-| 2 | Exploratory data analysis | 4 | 0 | Not started |
+| 2 | Exploratory data analysis | 4 | 4 | Done |
 | 3 | Cleaning & preprocessing | 5 | 0 | Not started |
 | 4 | Feature engineering & imbalance | 2 | 0 | Not started |
 | 5 | Model building & evaluation | 6 | 0 | Not started |
@@ -36,7 +36,7 @@
 | 7 | Deployment | 4 | 0 | Not started |
 | 8 | Documentation & presentation | 3 | 0 | Not started |
 | — | Final wrap-up | 2 | 0 | Not started |
-| **Total** | | **35** | **6** | |
+| **Total** | | **35** | **10** | |
 
 Status values: `Not started` · `In progress` · `Done`
 
@@ -63,12 +63,13 @@ Tick `[x]` only when the phase's **Done when** check is met.
 > Status: Done. Real CSV in `data/raw/`; `python -m src.data_check` → `reports/data_quality_report.md`; results in Section 5.
 
 ### Phase 2 — Exploratory data analysis (`notebooks/01_eda.ipynb`)
-- [ ] 2.1 Churn rate by Contract, tenure, InternetService, PaymentMethod
-- [ ] 2.2 Distributions of tenure, MonthlyCharges, TotalCharges by churn
-- [ ] 2.3 Correlation heatmap of numeric features
-- [ ] 2.4 Write 5–8 business insights; save figures to `reports/figures/`
+- [x] 2.1 Churn rate by Contract, tenure, InternetService, PaymentMethod
+- [x] 2.2 Distributions of tenure, MonthlyCharges, TotalCharges by churn
+- [x] 2.3 Correlation heatmap of numeric features
+- [x] 2.4 Write 5–8 business insights; save figures to `reports/figures/`
 
 **Done when:** notebook has charts + a written insights cell.
+> Status: Done. `notebooks/01_eda.ipynb` (executed, outputs saved) + 6 figures in `reports/figures/` + 8 written insights.
 
 ### Phase 3 — Cleaning & preprocessing (`src/data_prep.py`)
 - [ ] 3.1 Convert TotalCharges to numeric; handle blank rows
@@ -135,6 +136,9 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | pandas | 3.0 | 1 | Load CSV, data-quality checks |
 | NumPy | 2.x | 1 | Synthetic test fixture |
 | pytest | 9.x | 1 | Tests for loader + data check (`pytest -q`) |
+| Matplotlib | 3.x | 2 | EDA charts, saved PNGs |
+| Seaborn | 0.13 | 2 | KDE distributions, heatmaps |
+| Jupyter notebook format | — | 2 | `01_eda.ipynb` |
 
 ---
 
@@ -144,8 +148,6 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | --- | --- | --- | --- |
 | GitHub (remote) | 0 | Host the repo — push manually | github.com |
 | Jupyter Notebook / VS Code | 0 | Editor | `pip install notebook` |
-| Matplotlib, Seaborn | 2 | EDA charts | `pip install matplotlib seaborn` |
-| Plotly (optional) | 2 | Interactive charts | `pip install plotly` |
 | scikit-learn | 3–5 | Preprocessing, models, metrics | `pip install scikit-learn` |
 | imbalanced-learn | 4 | SMOTE | `pip install imbalanced-learn` |
 | XGBoost, LightGBM | 5 | Boosting models | `pip install xgboost lightgbm` |
@@ -168,6 +170,8 @@ Record every decision that someone resuming the project must know.
 | 2026-11-05 | Dataset shape | 7,043 rows × 21 columns; no NaN, no duplicate rows or IDs |
 | 2026-11-05 | Churn % | 1,869 Yes / 5,174 No → 26.5% (imbalanced; use stratified split, recall/F1/ROC-AUC) |
 | 2026-11-05 | Missing-value handling | 11 blank `TotalCharges`, all tenure = 0 and none churned (new, unbilled customers) → plan: set to 0 in Phase 3 |
+| 2026-11-05 | EDA: top churn signals | Month-to-month contract (42.7% churn, 89% of churners), tenure 0–12 mo (47.4%), fiber optic (41.9%), electronic check (45.3%), no OnlineSecurity/TechSupport (~42%). Month-to-month + fiber = 54.6% (2,128 customers). Gender ≈ no effect |
+| 2026-11-05 | EDA: correlations | Churn vs tenure r = −0.35, MonthlyCharges +0.19, TotalCharges −0.20. TotalCharges ≈ tenure × monthly (r = 0.83 with tenure) — redundant for linear models |
 | | Imbalance method | _class_weight or SMOTE, and why_ |
 | | Best model | |
 | | Best model scores | _Recall / F1 / ROC-AUC_ |
@@ -189,7 +193,8 @@ Record every decision that someone resuming the project must know.
 | `tests/make_sample_fixture.py` + `tests/fixtures/sample_telco_SYNTHETIC.csv` | SYNTHETIC 200-row sample for tests only — never for results | Done |
 | `pytest.ini` | Lets tests import `src` | Done |
 | `data/processed/` | Cleaned, encoded data | Folder created |
-| `notebooks/01_eda.ipynb` | EDA + insights | Not created |
+| `notebooks/01_eda.ipynb` | EDA + 8 business insights (executed) | Done |
+| `reports/figures/01–06_*.png` | Class balance, segment churn rates, contract×internet heatmap, distributions, correlation heatmap | Done |
 | `notebooks/02_preprocessing.ipynb` | Cleaning experiments | Not created |
 | `notebooks/03_modeling.ipynb` | Model training & comparison | Not created |
 | `notebooks/04_explainability.ipynb` | SHAP analysis | Not created |
@@ -214,6 +219,7 @@ Newest first. One line per session.
 
 | Date | Phase | What was done | Next step / Blockers |
 | --- | --- | --- | --- |
+| 2026-11-05 | 2 | EDA notebook: segment churn rates, distributions, correlations, 6 figures, 8 insights | Phase 3: preprocessing pipeline in `src/data_prep.py` |
 | 2026-11-05 | 1 | Real CSV added; data check run (7,043 × 21, 26.5% churn, 11 blank TotalCharges); all 4 tests pass — Phase 1 done | Phase 2: EDA notebook |
 | 2026-11-05 | 1 | Data dictionary, loader, data-quality check, tests + synthetic fixture (3 tests pass) | Add real CSV → run `python -m src.data_check` → tick 1.1, 1.3 |
 | 2026-11-05 | 0 | Folder skeleton, requirements.txt, .gitignore, README, check_progress.py, first git commit | Phase 1: add Telco CSV to data/raw/; push repo to GitHub |
