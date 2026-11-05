@@ -10,6 +10,7 @@ Steps
   3.2  drop customerID; Churn Yes/No -> 1/0
   3.3  one-hot encode categoricals (binary Yes/No -> single 0/1 column); scale numerics
   3.4  stratified 80/20 train/test split (random_state=42)
+  4.1  engineered features: tenure_group, num_services, charges_per_month (see add_features)
   3.5  all transforms live in a scikit-learn ColumnTransformer, fitted on TRAIN only
        (no test-set leakage). Wrap it in a Pipeline with any model in Phase 5.
 
@@ -27,6 +28,14 @@ from src.load_data import (BINARY_INT_COLS, CATEGORICAL_COLS, ID_COL,
                            NUMERIC_COLS, PROJECT_ROOT, TARGET, load_raw)
 
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
+
+# Phase 4 engineered features
+SERVICE_COLS = ["PhoneService", "MultipleLines", "OnlineSecurity", "OnlineBackup",
+                "DeviceProtection", "TechSupport", "StreamingTV", "StreamingMovies"]
+ENGINEERED_NUMERIC = ["num_services", "charges_per_month"]
+ENGINEERED_CATEGORICAL = ["tenure_group"]
+TENURE_BINS = [-1, 12, 24, 48, 72]
+TENURE_LABELS = ["0-12", "13-24", "25-48", "49-72"]
 RANDOM_STATE = 42
 TEST_SIZE = 0.20
 
@@ -44,15 +53,34 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def add_features(df: pd.DataFrame) -> pd.DataFrame:
+    """Step 4.1 — engineered features (run AFTER clean()). Row-wise only, so no leakage.
+
+    - tenure_group: 0-12 / 13-24 / 25-48 / 49-72 months (EDA: first year = 47% churn)
+    - num_services: count of subscribed services (phone, internet, 6 add-ons, multiple lines)
+    - charges_per_month: TotalCharges / tenure (tenure 0 -> MonthlyCharges); differs from
+      MonthlyCharges when a customer's price has changed over time
+    """
+    df = df.copy()
+    df["tenure_group"] = pd.cut(df["tenure"], bins=TENURE_BINS, labels=TENURE_LABELS).astype(str)
+    df["num_services"] = (df[SERVICE_COLS] == "Yes").sum(axis=1) + (df["InternetService"] != "No").astype(int)
+    df["charges_per_month"] = (df["TotalCharges"] / df["tenure"].where(df["tenure"] > 0)).fillna(df["MonthlyCharges"])
+    return df
+
+
 def build_preprocessor(numeric_cols=NUMERIC_COLS, categorical_cols=CATEGORICAL_COLS,
-                       passthrough_cols=BINARY_INT_COLS) -> ColumnTransformer:
+                       passthrough_cols=BINARY_INT_COLS, engineered: bool = False) -> ColumnTransformer:
     """Step 3.3 + 3.5 — unfitted ColumnTransformer.
 
     - numeric: StandardScaler
     - categorical: OneHotEncoder(drop='if_binary') so Yes/No becomes one 0/1 column,
       multi-level columns get one column per level; unseen levels at predict time are ignored
     - SeniorCitizen: already 0/1, passed through
+    - engineered=True adds the Phase 4 columns (input must come from add_features)
     """
+    if engineered:
+        numeric_cols = list(numeric_cols) + ENGINEERED_NUMERIC
+        categorical_cols = list(categorical_cols) + ENGINEERED_CATEGORICAL
     return ColumnTransformer(
         transformers=[
             ("num", StandardScaler(), list(numeric_cols)),
@@ -71,7 +99,7 @@ def split(df: pd.DataFrame, test_size: float = TEST_SIZE, random_state: int = RA
     return train_test_split(X, y, test_size=test_size, stratify=y, random_state=random_state)
 
 
-def prepare(path=None, fit: bool = True):
+def prepare(path=None, fit: bool = True, engineered: bool = False):
     """Raw CSV -> (X_train, X_test, y_train, y_test, preprocessor).
 
     With fit=True (default) the preprocessor is fitted on X_train only and
@@ -79,10 +107,14 @@ def prepare(path=None, fit: bool = True):
     With fit=False the cleaned, *untransformed* splits and an unfitted
     preprocessor are returned — use this to put the preprocessor inside a
     model Pipeline / cross-validation (Phase 5) so scaling is refit per fold.
+    engineered=True adds the Phase 4 features. Default False: in the Phase 4 CV
+    experiment they gave no gain (ROC-AUC unchanged), so the simpler 40-feature set is used.
     """
     df = clean(load_raw(path) if path else load_raw())
+    if engineered:
+        df = add_features(df)
     X_train, X_test, y_train, y_test = split(df)
-    pre = build_preprocessor()
+    pre = build_preprocessor(engineered=engineered)
     if not fit:
         return X_train, X_test, y_train, y_test, pre
     pre.set_output(transform="pandas")
@@ -95,7 +127,7 @@ def save_processed(out_dir: Path = PROCESSED_DIR) -> dict:
     """Write train/test model-ready CSVs + the cleaned full dataset."""
     out_dir.mkdir(parents=True, exist_ok=True)
     X_train, X_test, y_train, y_test, pre = prepare()
-    clean(load_raw()).to_csv(out_dir / "telco_clean.csv", index=False)
+    add_features(clean(load_raw())).to_csv(out_dir / "telco_clean.csv", index=False)
     X_train.assign(Churn=y_train.values).to_csv(out_dir / "train.csv", index=False)
     X_test.assign(Churn=y_test.values).to_csv(out_dir / "test.csv", index=False)
     return {

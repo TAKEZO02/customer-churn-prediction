@@ -14,10 +14,10 @@
 | Project | Customer Churn Prediction Using Machine Learning |
 | Dataset | IBM Telco Customer Churn (Kaggle) |
 | Goal | Predict which customers will churn, explain why, serve predictions via a web app |
-| Current phase | Phase 4 — Feature engineering & imbalance handling (next) |
-| Overall progress | 15 / 35 tasks (43%) |
+| Current phase | Phase 5 — Model building & evaluation (next) |
+| Overall progress | 17 / 35 tasks (49%) |
 | Last updated | 2026-11-05 |
-| Next immediate action | Add engineered features (tenure groups, number of services, charges per tenure month) to `src/data_prep.py` |
+| Next immediate action | `notebooks/03_modeling.ipynb`: baseline Logistic Regression with `class_weight='balanced'` via `prepare(fit=False)` |
 | Blockers | Push to GitHub is a manual step (create empty repo, then `git remote add origin <url>` + `git push -u origin main`) |
 
 **How % is calculated:** ticked tasks in Section 2 ÷ 35 total tasks × 100.
@@ -30,13 +30,13 @@
 | 1 | Data collection & understanding | 3 | 3 | Done |
 | 2 | Exploratory data analysis | 4 | 4 | Done |
 | 3 | Cleaning & preprocessing | 5 | 5 | Done |
-| 4 | Feature engineering & imbalance | 2 | 0 | Not started |
+| 4 | Feature engineering & imbalance | 2 | 2 | Done |
 | 5 | Model building & evaluation | 6 | 0 | Not started |
 | 6 | Explainability & insights | 3 | 0 | Not started |
 | 7 | Deployment | 4 | 0 | Not started |
 | 8 | Documentation & presentation | 3 | 0 | Not started |
 | — | Final wrap-up | 2 | 0 | Not started |
-| **Total** | | **35** | **15** | |
+| **Total** | | **35** | **17** | |
 
 Status values: `Not started` · `In progress` · `Done`
 
@@ -82,10 +82,12 @@ Tick `[x]` only when the phase's **Done when** check is met.
 > Status: Done. `from src.data_prep import prepare` → `X_train, X_test, y_train, y_test, preprocessor`. `prepare(fit=False)` gives the unfitted preprocessor for use inside a model Pipeline (Phase 5). `python -m src.data_prep` writes `data/processed/`.
 
 ### Phase 4 — Feature engineering & imbalance handling
-- [ ] 4.1 Add features: tenure groups, number of services, charges per tenure month
-- [ ] 4.2 Compare class_weight='balanced' vs SMOTE; record choice in Section 5
+- [x] 4.1 Add features: tenure groups, number of services, charges per tenure month
+- [x] 4.2 Compare class_weight='balanced' vs SMOTE; record choice in Section 5
 
 **Done when:** chosen approach + reason is in Section 5.
+> Status: Done. `add_features()` in `src/data_prep.py`; `src/imbalance.py` (SMOTE); experiment `python -m src.compare_imbalance` → `reports/imbalance_comparison.csv` + `reports/figures/07_imbalance_comparison.png`. Decisions in Section 5.
+> Note: SMOTE here ran on the built-in `SimpleSMOTE` (imbalanced-learn not installed in the build environment). On your machine, `pip install imbalanced-learn` and re-run `python -m src.compare_imbalance` — the code switches to the library automatically; expect near-identical numbers.
 
 ### Phase 5 — Model building & evaluation (`notebooks/03_modeling.ipynb`, `src/train.py`)
 - [ ] 5.1 Baseline Logistic Regression
@@ -140,7 +142,7 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | Matplotlib | 3.x | 2 | EDA charts, saved PNGs |
 | Seaborn | 0.13 | 2 | KDE distributions, heatmaps |
 | Jupyter notebook format | — | 2 | `01_eda.ipynb` |
-| scikit-learn | 1.x | 3 | `ColumnTransformer`, `OneHotEncoder`, `StandardScaler`, `train_test_split` |
+| scikit-learn | 1.x | 3–4 | `ColumnTransformer`, `OneHotEncoder`, `StandardScaler`, `train_test_split`; Phase 4: `StratifiedKFold`, LogisticRegression, RandomForest, `NearestNeighbors` (built-in SMOTE) |
 
 ---
 
@@ -151,7 +153,7 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | GitHub (remote) | 0 | Host the repo — push manually | github.com |
 | Jupyter Notebook / VS Code | 0 | Editor | `pip install notebook` |
 | scikit-learn (models, metrics) | 5 | Models, CV, metrics (already installed in Phase 3) | — |
-| imbalanced-learn | 4 | SMOTE | `pip install imbalanced-learn` |
+| imbalanced-learn (optional now) | 4–5 | Library SMOTE — not required: class_weight was chosen; install only to re-run the Phase 4 comparison with the official SMOTE | `pip install imbalanced-learn` |
 | XGBoost, LightGBM | 5 | Boosting models | `pip install xgboost lightgbm` |
 | Optuna (optional) | 5 | Hyperparameter tuning | `pip install optuna` |
 | MLflow (optional) | 5 | Experiment tracking | `pip install mlflow` |
@@ -176,7 +178,8 @@ Record every decision that someone resuming the project must know.
 | 2026-11-05 | Train/test split | Stratified 80/20, random_state=42 → train 5,634 / test 1,409, churn 26.5% in both. Preprocessor fitted on train only |
 | 2026-11-05 | EDA: top churn signals | Month-to-month contract (42.7% churn, 89% of churners), tenure 0–12 mo (47.4%), fiber optic (41.9%), electronic check (45.3%), no OnlineSecurity/TechSupport (~42%). Month-to-month + fiber = 54.6% (2,128 customers). Gender ≈ no effect |
 | 2026-11-05 | EDA: correlations | Churn vs tenure r = −0.35, MonthlyCharges +0.19, TotalCharges −0.20. TotalCharges ≈ tenure × monthly (r = 0.83 with tenure) — redundant for linear models |
-| | Imbalance method | _class_weight or SMOTE, and why_ |
+| 2026-11-05 | Engineered features | `tenure_group`, `num_services`, `charges_per_month` built and tested. 5-fold CV: **no gain** (LR AUC 0.846 → 0.846, RF 0.844 → 0.845; F1 flat). → Default `prepare(engineered=False)` (40 features). Re-test with boosting in Phase 5 |
+| 2026-11-05 | Imbalance method | **class_weight='balanced'**. 5-fold CV, LR: recall 0.54 → 0.80, F1 0.59 → 0.63, AUC unchanged 0.85. SMOTE gave the same F1 (0.63) with similar or lower recall (LR 0.79, RF 0.69 vs 0.77). class_weight wins: equal/better, simpler, no synthetic rows, maps to `scale_pos_weight` in XGBoost/LightGBM |
 | | Best model | |
 | | Best model scores | _Recall / F1 / ROC-AUC_ |
 | | Decision threshold | |
@@ -202,8 +205,12 @@ Record every decision that someone resuming the project must know.
 | `notebooks/02_preprocessing.ipynb` | Step-by-step walkthrough of the pipeline (executed) | Done |
 | `notebooks/03_modeling.ipynb` | Model training & comparison | Not created |
 | `notebooks/04_explainability.ipynb` | SHAP analysis | Not created |
-| `src/data_prep.py` | `clean()`, `split()`, `build_preprocessor()`, `prepare()`, `save_processed()` | Done (Phase 4 adds features) |
-| `tests/test_data_prep.py` | 6 tests: cleaning, no raw mutation, stratification, encoding, no leakage, real-data shapes | Done |
+| `src/data_prep.py` | `clean()`, `add_features()`, `split()`, `build_preprocessor(engineered=)`, `prepare(fit=, engineered=)`, `save_processed()` | Done |
+| `src/imbalance.py` | `get_smote()` (imblearn if installed, else built-in `SimpleSMOTE`) | Done |
+| `src/compare_imbalance.py` | Phase 4 CV experiment: base vs engineered features × none / class_weight / SMOTE × LR / RF | Done |
+| `reports/imbalance_comparison.csv` | Full results of the experiment (12 rows) | Done |
+| `reports/figures/07_imbalance_comparison.png` | Imbalance comparison chart | Done |
+| `tests/test_data_prep.py` | 8 tests: cleaning, no raw mutation, stratification, encoding, no leakage, real-data shapes, engineered features, SMOTE | Done |
 | `src/train.py` | Trains & saves best model | Not created |
 | `src/predict.py` | Scores a single customer | Not created |
 | `models/` | churn_model.pkl, preprocessor.pkl | Folder created |
@@ -224,6 +231,7 @@ Newest first. One line per session.
 
 | Date | Phase | What was done | Next step / Blockers |
 | --- | --- | --- | --- |
+| 2026-11-05 | 4 | Engineered features + SMOTE module + CV comparison. Features: no gain → off by default. Imbalance: class_weight='balanced' chosen. 12 tests pass | Phase 5: model comparison with class_weight |
 | 2026-11-05 | 3 | Preprocessing pipeline `src/data_prep.py`, notebook 02, processed data, 6 new tests (10 total pass) | Phase 4: engineered features + imbalance comparison |
 | 2026-11-05 | 2 | EDA notebook: segment churn rates, distributions, correlations, 6 figures, 8 insights | Phase 3: preprocessing pipeline in `src/data_prep.py` |
 | 2026-11-05 | 1 | Real CSV added; data check run (7,043 × 21, 26.5% churn, 11 blank TotalCharges); all 4 tests pass — Phase 1 done | Phase 2: EDA notebook |

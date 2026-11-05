@@ -63,3 +63,23 @@ def test_prepare_on_real_data():
     X_train, X_test, y_train, y_test, _ = prepare()
     assert X_train.shape == (5634, X_test.shape[1])
     assert X_test.shape[0] == 1409
+
+
+def test_add_features(raw):
+    from src.data_prep import add_features
+    df = add_features(clean(raw))
+    assert set(df["tenure_group"].unique()) <= {"0-12", "13-24", "25-48", "49-72"}
+    assert df["num_services"].between(0, 9).all()
+    assert df["charges_per_month"].notna().all()
+    zero = df["tenure"] == 0
+    assert (df.loc[zero, "charges_per_month"] == df.loc[zero, "MonthlyCharges"]).all()
+
+
+def test_smote_balances_training_data():
+    import numpy as np
+    from src.imbalance import SimpleSMOTE
+    rng = np.random.default_rng(0)
+    X = rng.normal(size=(100, 4)); y = np.array([1] * 20 + [0] * 80)
+    Xr, yr = SimpleSMOTE(random_state=0).fit_resample(X, y)
+    assert (yr == 1).sum() == (yr == 0).sum() == 80
+    assert np.allclose(Xr[:100], X)  # originals untouched
