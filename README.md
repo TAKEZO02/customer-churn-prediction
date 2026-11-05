@@ -28,8 +28,10 @@ customer-churn-prediction/
 ```bash
 python -m venv venv
 # Windows: venv\Scripts\activate   |   macOS/Linux: source venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt   # or requirements.txt for just the app
+streamlit run app/streamlit_app.py
 ```
+Deployment: see [`DEPLOY.md`](DEPLOY.md).
 
 ## Roadmap
 | Phase | Work |

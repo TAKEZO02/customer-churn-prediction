@@ -16,9 +16,7 @@ env/
 data/processed/*
 !data/processed/.gitkeep
 
-# Models (re-create with src/train.py)
-models/*.pkl
-!models/.gitkeep
+# Models: churn_model.pkl + background.csv ARE committed (the deployed app needs them)
 
 # Streamlit secrets
 .streamlit/secrets.toml

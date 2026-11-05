@@ -1,0 +1,10 @@
+# Everything else: notebooks, tests, optional models and libraries
+-r requirements.txt
+seaborn==0.13.2
+pytest>=8.0
+notebook>=7.0
+imbalanced-learn>=0.12   # Phase 4 re-run with library SMOTE (optional)
+xgboost>=2.0             # Phase 5 extra candidate (optional)
+lightgbm>=4.3            # Phase 5 extra candidate (optional)
+shap>=0.45               # Phase 6 library backend (optional)
+# plotly, optuna, mlflow, fastapi, uvicorn: not used
