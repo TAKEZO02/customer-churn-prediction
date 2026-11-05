@@ -14,11 +14,11 @@
 | Project | Customer Churn Prediction Using Machine Learning |
 | Dataset | IBM Telco Customer Churn (Kaggle) |
 | Goal | Predict which customers will churn, explain why, serve predictions via a web app |
-| Current phase | Phase 5 — Model building & evaluation (next) |
-| Overall progress | 17 / 35 tasks (49%) |
+| Current phase | Phase 6 — Explainability & business insights (next) |
+| Overall progress | 23 / 35 tasks (66%) |
 | Last updated | 2026-11-05 |
-| Next immediate action | `notebooks/03_modeling.ipynb`: baseline Logistic Regression with `class_weight='balanced'` via `prepare(fit=False)` |
-| Blockers | Push to GitHub is a manual step (create empty repo, then `git remote add origin <url>` + `git push -u origin main`) |
+| Next immediate action | `pip install shap`, then build `notebooks/04_explainability.ipynb`: SHAP summary plot for the saved Random Forest |
+| Blockers | XGBoost/LightGBM not run yet (not installed in build env) — run `pip install xgboost lightgbm` then `python -m src.train` locally; it adds them automatically. Push to GitHub is a manual step (create empty repo, then `git remote add origin <url>` + `git push -u origin main`) |
 
 **How % is calculated:** ticked tasks in Section 2 ÷ 35 total tasks × 100.
 
@@ -31,12 +31,12 @@
 | 2 | Exploratory data analysis | 4 | 4 | Done |
 | 3 | Cleaning & preprocessing | 5 | 5 | Done |
 | 4 | Feature engineering & imbalance | 2 | 2 | Done |
-| 5 | Model building & evaluation | 6 | 0 | Not started |
+| 5 | Model building & evaluation | 6 | 6 | Done (XGBoost/LightGBM to run locally) |
 | 6 | Explainability & insights | 3 | 0 | Not started |
 | 7 | Deployment | 4 | 0 | Not started |
 | 8 | Documentation & presentation | 3 | 0 | Not started |
 | — | Final wrap-up | 2 | 0 | Not started |
-| **Total** | | **35** | **17** | |
+| **Total** | | **35** | **23** | |
 
 Status values: `Not started` · `In progress` · `Done`
 
@@ -90,14 +90,16 @@ Tick `[x]` only when the phase's **Done when** check is met.
 > Note: SMOTE here ran on the built-in `SimpleSMOTE` (imbalanced-learn not installed in the build environment). On your machine, `pip install imbalanced-learn` and re-run `python -m src.compare_imbalance` — the code switches to the library automatically; expect near-identical numbers.
 
 ### Phase 5 — Model building & evaluation (`notebooks/03_modeling.ipynb`, `src/train.py`)
-- [ ] 5.1 Baseline Logistic Regression
-- [ ] 5.2 Train Decision Tree, Random Forest, XGBoost, LightGBM
-- [ ] 5.3 5-fold stratified cross-validation for each
-- [ ] 5.4 Comparison table: Precision, Recall, F1, ROC-AUC + confusion matrix
-- [ ] 5.5 Tune top 1–2 models; tune decision threshold for recall
-- [ ] 5.6 Save best model + preprocessor to `models/` (joblib)
+- [x] 5.1 Baseline Logistic Regression
+- [x] 5.2 Train Decision Tree, Random Forest, XGBoost, LightGBM
+- [x] 5.3 5-fold stratified cross-validation for each
+- [x] 5.4 Comparison table: Precision, Recall, F1, ROC-AUC + confusion matrix
+- [x] 5.5 Tune top 1–2 models; tune decision threshold for recall
+- [x] 5.6 Save best model + preprocessor to `models/` (joblib)
 
 **Done when:** comparison table exists and saved model reloads and predicts.
+> Status: Done. `python -m src.train` (~3 min) → comparison, tuning, threshold, test evaluation, saved model. `notebooks/03_modeling.ipynb` presents results and reloads the model. 4 model tests pass.
+> 5.2 note: Decision Tree, Random Forest and scikit-learn HistGradientBoosting were trained here. XGBoost + LightGBM code is in `src/train.py` and runs automatically once installed — run it locally and update Section 5 if either beats Random Forest.
 
 ### Phase 6 — Explainability & business insights (`notebooks/04_explainability.ipynb`)
 - [ ] 6.1 SHAP summary plot (global churn drivers)
@@ -142,7 +144,9 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | Matplotlib | 3.x | 2 | EDA charts, saved PNGs |
 | Seaborn | 0.13 | 2 | KDE distributions, heatmaps |
 | Jupyter notebook format | — | 2 | `01_eda.ipynb` |
-| scikit-learn | 1.x | 3–4 | `ColumnTransformer`, `OneHotEncoder`, `StandardScaler`, `train_test_split`; Phase 4: `StratifiedKFold`, LogisticRegression, RandomForest, `NearestNeighbors` (built-in SMOTE) |
+| SciPy | 1.x | 5 | Search distributions (`loguniform`, `randint`) |
+| joblib | 1.x | 5 | Save/load `models/churn_model.pkl`, `preprocessor.pkl` |
+| scikit-learn | 1.x | 3–5 | `ColumnTransformer`, `OneHotEncoder`, `StandardScaler`, `train_test_split`; Phase 4: `StratifiedKFold`, LogisticRegression, RandomForest, `NearestNeighbors` (built-in SMOTE); Phase 5: `Pipeline`, `cross_validate`, `RandomizedSearchCV`, DecisionTree, HistGradientBoosting, metrics |
 
 ---
 
@@ -152,12 +156,10 @@ Move a tool here from Section 4 the moment it is installed AND used.
 | --- | --- | --- | --- |
 | GitHub (remote) | 0 | Host the repo — push manually | github.com |
 | Jupyter Notebook / VS Code | 0 | Editor | `pip install notebook` |
-| scikit-learn (models, metrics) | 5 | Models, CV, metrics (already installed in Phase 3) | — |
 | imbalanced-learn (optional now) | 4–5 | Library SMOTE — not required: class_weight was chosen; install only to re-run the Phase 4 comparison with the official SMOTE | `pip install imbalanced-learn` |
-| XGBoost, LightGBM | 5 | Boosting models | `pip install xgboost lightgbm` |
+| XGBoost, LightGBM | 5 (re-run) | Extra boosting candidates — code ready in `src/train.py` | `pip install xgboost lightgbm` |
 | Optuna (optional) | 5 | Hyperparameter tuning | `pip install optuna` |
 | MLflow (optional) | 5 | Experiment tracking | `pip install mlflow` |
-| joblib | 5 | Save/load model | bundled with scikit-learn |
 | SHAP | 6 | Explainability | `pip install shap` |
 | Streamlit | 7 | Web app | `pip install streamlit` |
 | FastAPI + Uvicorn (optional) | 7 | REST API | `pip install fastapi uvicorn` |
@@ -180,9 +182,11 @@ Record every decision that someone resuming the project must know.
 | 2026-11-05 | EDA: correlations | Churn vs tenure r = −0.35, MonthlyCharges +0.19, TotalCharges −0.20. TotalCharges ≈ tenure × monthly (r = 0.83 with tenure) — redundant for linear models |
 | 2026-11-05 | Engineered features | `tenure_group`, `num_services`, `charges_per_month` built and tested. 5-fold CV: **no gain** (LR AUC 0.846 → 0.846, RF 0.844 → 0.845; F1 flat). → Default `prepare(engineered=False)` (40 features). Re-test with boosting in Phase 5 |
 | 2026-11-05 | Imbalance method | **class_weight='balanced'**. 5-fold CV, LR: recall 0.54 → 0.80, F1 0.59 → 0.63, AUC unchanged 0.85. SMOTE gave the same F1 (0.63) with similar or lower recall (LR 0.79, RF 0.69 vs 0.77). class_weight wins: equal/better, simpler, no synthetic rows, maps to `scale_pos_weight` in XGBoost/LightGBM |
-| | Best model | |
-| | Best model scores | _Recall / F1 / ROC-AUC_ |
-| | Decision threshold | |
+| 2026-11-05 | CV comparison (class_weight, 5-fold) | ROC-AUC: Logistic Regression 0.846, Random Forest 0.845, HistGradientBoosting 0.837, Decision Tree 0.825. Top models within 1 std — signal is largely linear |
+| 2026-11-05 | Tuning | RandomizedSearchCV (25 iter, ROC-AUC) on LR + RF. RF 0.8486 (max_depth 10, min_samples_leaf 16, max_features sqrt, 306 trees); LR 0.8462 (C 56.7). Engineered features with tuned RF: 0.8487 → still no gain |
+| 2026-11-05 | Best model | **Random Forest (tuned)**, `class_weight='balanced'`, 40 base features → `models/churn_model.pkl`. LR is a near-equal, more interpretable fallback |
+| 2026-11-05 | Best model scores (TEST set, 1,409) | ROC-AUC **0.845**, recall **0.80**, precision 0.52, F1 0.63, accuracy 0.75. Confusion: TN 755, FP 280, FN 75, TP 299. Matches CV → no overfitting |
+| 2026-11-05 | Decision threshold | **0.49** = highest threshold with out-of-fold recall ≥ 80% (train set). Business rule: catch 80% of churners; raise it for fewer false alarms |
 | | Top 5 churn drivers | |
 
 ---
@@ -203,7 +207,7 @@ Record every decision that someone resuming the project must know.
 | `notebooks/01_eda.ipynb` | EDA + 8 business insights (executed) | Done |
 | `reports/figures/01–06_*.png` | Class balance, segment churn rates, contract×internet heatmap, distributions, correlation heatmap | Done |
 | `notebooks/02_preprocessing.ipynb` | Step-by-step walkthrough of the pipeline (executed) | Done |
-| `notebooks/03_modeling.ipynb` | Model training & comparison | Not created |
+| `notebooks/03_modeling.ipynb` | Results, test evaluation, reload + predict check (executed) | Done |
 | `notebooks/04_explainability.ipynb` | SHAP analysis | Not created |
 | `src/data_prep.py` | `clean()`, `add_features()`, `split()`, `build_preprocessor(engineered=)`, `prepare(fit=, engineered=)`, `save_processed()` | Done |
 | `src/imbalance.py` | `get_smote()` (imblearn if installed, else built-in `SimpleSMOTE`) | Done |
@@ -211,9 +215,13 @@ Record every decision that someone resuming the project must know.
 | `reports/imbalance_comparison.csv` | Full results of the experiment (12 rows) | Done |
 | `reports/figures/07_imbalance_comparison.png` | Imbalance comparison chart | Done |
 | `tests/test_data_prep.py` | 8 tests: cleaning, no raw mutation, stratification, encoding, no leakage, real-data shapes, engineered features, SMOTE | Done |
-| `src/train.py` | Trains & saves best model | Not created |
+| `src/train.py` | Compare → tune → threshold → test → save (`python -m src.train`) | Done |
+| `tests/test_model.py` | 4 tests: bundle contents, reload + predict, metrics reproduce, beats baseline | Done |
+| `reports/model_comparison.csv`, `tuning_results.csv`, `model_metrics.json` | Phase 5 results | Done |
+| `reports/figures/08–10_*.png` | Model comparison, confusion matrix, ROC + PR curves | Done |
 | `src/predict.py` | Scores a single customer | Not created |
-| `models/` | churn_model.pkl, preprocessor.pkl | Folder created |
+| `models/churn_model.pkl` | Dict: fitted `pipeline`, `threshold`, `model_name`, `feature_columns`, `best_params`, `test_metrics` (git-ignored; recreate with `python -m src.train`) | Done |
+| `models/preprocessor.pkl` | Fitted ColumnTransformer alone | Done |
 | `app/streamlit_app.py` | Web app | Not created |
 | `tests/test_predict.py` | Prediction tests | Not created |
 | `reports/` | Figures, final report | Folder created |
@@ -231,6 +239,7 @@ Newest first. One line per session.
 
 | Date | Phase | What was done | Next step / Blockers |
 | --- | --- | --- | --- |
+| 2026-11-05 | 5 | 4 models compared, LR + RF tuned, threshold 0.49 for 80% recall, test ROC-AUC 0.845, model saved, notebook 03, 16 tests pass | Phase 6: SHAP (install shap); run XGBoost/LightGBM locally |
 | 2026-11-05 | 4 | Engineered features + SMOTE module + CV comparison. Features: no gain → off by default. Imbalance: class_weight='balanced' chosen. 12 tests pass | Phase 5: model comparison with class_weight |
 | 2026-11-05 | 3 | Preprocessing pipeline `src/data_prep.py`, notebook 02, processed data, 6 new tests (10 total pass) | Phase 4: engineered features + imbalance comparison |
 | 2026-11-05 | 2 | EDA notebook: segment churn rates, distributions, correlations, 6 figures, 8 insights | Phase 3: preprocessing pipeline in `src/data_prep.py` |

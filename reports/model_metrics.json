@@ -1,0 +1,104 @@
+{
+  "selected_model": "Random Forest",
+  "best_params": {
+    "max_depth": 10,
+    "max_features": "sqrt",
+    "min_samples_leaf": 16,
+    "n_estimators": 306
+  },
+  "cv_comparison": [
+    {
+      "model": "Logistic Regression",
+      "recall": 0.8027,
+      "precision": 0.5178,
+      "f1": 0.6293,
+      "roc_auc": 0.846,
+      "roc_auc_std": 0.0124,
+      "fit_seconds": 0.2905
+    },
+    {
+      "model": "Random Forest",
+      "recall": 0.7672,
+      "precision": 0.5386,
+      "f1": 0.6328,
+      "roc_auc": 0.8448,
+      "roc_auc_std": 0.0099,
+      "fit_seconds": 4.7439
+    },
+    {
+      "model": "HistGradientBoosting",
+      "recall": 0.7311,
+      "precision": 0.546,
+      "f1": 0.6251,
+      "roc_auc": 0.8372,
+      "roc_auc_std": 0.0092,
+      "fit_seconds": 2.5282
+    },
+    {
+      "model": "Decision Tree",
+      "recall": 0.7873,
+      "precision": 0.5023,
+      "f1": 0.6129,
+      "roc_auc": 0.8252,
+      "roc_auc_std": 0.0095,
+      "fit_seconds": 0.3509
+    }
+  ],
+  "tuned": [
+    {
+      "model": "Random Forest",
+      "cv_roc_auc_tuned": 0.8486,
+      "best_params": {
+        "max_depth": 10,
+        "max_features": "sqrt",
+        "min_samples_leaf": 16,
+        "n_estimators": 306
+      }
+    },
+    {
+      "model": "Logistic Regression",
+      "cv_roc_auc_tuned": 0.8462,
+      "best_params": {
+        "C": 56.6985
+      }
+    }
+  ],
+  "engineered_features_cv_roc_auc": 0.8487,
+  "threshold": 0.4903,
+  "target_recall": 0.8,
+  "out_of_fold": {
+    "oof_recall": 0.8,
+    "oof_precision": 0.5193,
+    "oof_f1": 0.6298,
+    "oof_roc_auc": 0.8476
+  },
+  "test": {
+    "tuned_threshold": {
+      "threshold": 0.4903,
+      "recall": 0.7994652406417112,
+      "precision": 0.5164075993091537,
+      "f1": 0.6274921301154249,
+      "accuracy": 0.7480482611781405,
+      "confusion": {
+        "tn": 755,
+        "fp": 280,
+        "fn": 75,
+        "tp": 299
+      }
+    },
+    "default_0.5": {
+      "threshold": 0.5,
+      "recall": 0.7967914438502673,
+      "precision": 0.5173611111111112,
+      "f1": 0.6273684210526316,
+      "accuracy": 0.7487579843860894,
+      "confusion": {
+        "tn": 757,
+        "fp": 278,
+        "fn": 76,
+        "tp": 298
+      }
+    },
+    "roc_auc": 0.8449288279211553
+  }
+}
